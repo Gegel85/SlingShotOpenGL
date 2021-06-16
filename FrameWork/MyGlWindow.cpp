@@ -11,9 +11,9 @@ static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 #define DEPTH 10
 #define NB_POINTS 1000
 #define SPACE 10
-#define MIN_FLOOR_Y 0
-#define MAX_FLOOR_Y 100
-#define START_VALUE 25
+#define MIN_FLOOR_Y 10
+#define MAX_FLOOR_Y 60
+#define START_VALUE 35
 #define MAX_DELTA 8
 #define CHUNK_SIZE 20
 #define LEFT_POSITION -50
@@ -100,6 +100,7 @@ void MyGlWindow::setupObjects() {
 	floor->setChunkSize(CHUNK_SIZE);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
+	floor->setBottom(-100);
 	m_renderable.push_back(floor);
 }
 

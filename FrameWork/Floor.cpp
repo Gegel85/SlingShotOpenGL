@@ -56,6 +56,11 @@ void Floor::setDepth(float depth)
 	this->_depth = depth;
 }
 
+void Floor::setBottom(float y)
+{
+	this->_bottom = y;
+}
+
 void Floor::update(cyclone::real duration)
 {
 
@@ -67,22 +72,46 @@ void Floor::draw(bool shadow)
 
 	if (shadow)
 		glColor3f(0.1, 0.1, 0.1);
-	else
-		glColor3f(0, (pt1 + this->_min) / this->_max, 0);
 	glPushMatrix(); //save current coord system
 	glTranslatef(particle->getPosition().x, particle->getPosition().y, particle->getPosition().z);
+	
+	glBegin(GL_QUADS);
+	glColor3f(0.45, 0, 0);
+	glVertex3f(0, this->_bottom, this->_depth);
+	glVertex3f(this->_chunkSize * this->_space, this->_bottom, this->_depth);
 
+	glColor3f(0.20, 0, 0);
+	glVertex3f(this->_chunkSize * this->_space, this->_min, this->_depth);
+	glVertex3f(0, this->_min, this->_depth);
+	glEnd();
+
+	glColor3f(0, (pt1 * this->_space) / this->_max, 0);
 	for (unsigned i = 0, j = (this->_left + 1) % this->_points.size(); i < this->_chunkSize - 1; i++, j = (j + 1) % this->_points.size()) {
 		auto pt2 = this->_points[j];
 
 		glBegin(GL_QUADS);
+		if (!shadow)
+			glColor3f(0, (pt1 - this->_min) / (this->_max - this->_min), 0);
 		glVertex3f(i * this->_space - this->_leftPad, pt1, -this->_depth);
 		glVertex3f(i * this->_space - this->_leftPad, pt1, this->_depth);
 
 		if (!shadow)
-			glColor3f(0, (pt2 + this->_min) / this->_max, 0);
+			glColor3f(0, (pt2 - this->_min) / (this->_max - this->_min), 0);
 		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, this->_depth);
 		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, -this->_depth);
+
+
+		if (!shadow)
+			glColor3f(0, (pt2 - this->_min) / (this->_max - this->_min), 0);
+		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, this->_depth);
+		if (!shadow)
+			glColor3f(0, (pt1 - this->_min) / (this->_max - this->_min), 0);
+		glVertex3f(i * this->_space - this->_leftPad, pt1, this->_depth);
+		if (!shadow)
+			glColor3f(0.20, 0, 0);
+		glVertex3f(i * this->_space - this->_leftPad, this->_min, this->_depth);
+		glVertex3f((i + 1) * this->_space - this->_leftPad, this->_min, this->_depth);
+
 		glEnd();
 		pt1 = pt2;
 	}
