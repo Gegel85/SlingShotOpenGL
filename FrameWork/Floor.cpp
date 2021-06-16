@@ -3,6 +3,7 @@
 #include <random>
 #include <ctime>
 #include "Floor.h"
+#include "core.h"
 
 float myRand(float min, float max)
 {
@@ -36,12 +37,18 @@ void Floor::regenerate(size_t sidesBeforeRepeat, float spaceBetweenSides, float 
 	} while (sidesBeforeRepeat--);
 }
 
-std::pair<float, float> Floor::getVector(float x)
+std::vector<cyclone::Vector3> Floor::getAnglePoints(float x1, float x2)
 {
-	auto v1 = static_cast<int>(x / this->_space) % this->_points.size();
-	auto v2 = (static_cast<int>(x / this->_space) + 1) % this->_points.size();
+	auto start = static_cast<int>(x1 / this->_space) % this->_points.size();
+	auto end = x2 + this->_space - std::fmod(x2, this->_space);
+	std::vector<cyclone::Vector3> list;
+	float x = x1 - std::fmod(x1, this->_space);
 
-	return { this->_points[v1], this->_points[v2] };
+	list.reserve((x - end) * this->_space);
+	for (; x < x2; x += this->_space, start = (start + 1) % this->_points.size())
+		list.emplace_back(x, this->_points[start], 0);
+	assert((x - end) * this->_space == list.size());
+	return list;
 }
 
 void Floor::setDepth(float depth)

@@ -22,9 +22,9 @@ public:
 	Floor(const MyWorldSpec* env, float depth = 10, size_t sidesBeforeRepeat = 100, float spaceBetweenSides = 4, float minValue = 10, float maxValue = 60, float startValue = 35, float maxDelta = 4, float (*randFct)(float min, float max) = myRand);
 	void regenerate(size_t sidesBeforeRepeat = 100, float spaceBetweenSides = 4, float minValue = 0, float maxValue = 50, float startValue = 25, float maxDelta = 4, float (*randFct)(float min, float max) = myRand);
 	void update(cyclone::real duration = 0) override;
-	std::pair<float, float> getVector(float x);
+	std::vector<cyclone::Vector3> getAnglePoints(float x1, float x2);
 	void setLeft(size_t left);
-	void setLeftX(float x);
+	void setLeftX(float x1);
 	void setDepth(float depth);
 	void setBottom(float y);
 	void draw(bool shadow) override;
