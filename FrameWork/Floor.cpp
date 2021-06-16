@@ -52,18 +52,17 @@ void Floor::update(cyclone::real duration)
 
 void Floor::draw(bool shadow)
 {
+	auto pt1 = this->_points[this->_left];
+
 	if (shadow)
 		glColor3f(0.1, 0.1, 0.1);
 	else
-		glColor3f(0, (this->_points[0] + this->_min) / this->_max, 0);
+		glColor3f(0, (pt1 + this->_min) / this->_max, 0);
 	glPushMatrix(); //save current coord system
 	glTranslatef(particle->getPosition().x, particle->getPosition().y, particle->getPosition().z);
 
-	//glPolygonMode(GL_FRONT, GL_FILL);
-
-	for (unsigned i = 0; i < this->_points.size() - 1; i++) {
-		auto pt1 = this->_points[i];
-		auto pt2 = this->_points[i + 1];
+	for (unsigned i = 0, j = (this->_left + 1) % this->_points.size(); i < this->_chunkSize - 1; i++, j = (j + 1) % this->_points.size()) {
+		auto pt2 = this->_points[j];
 
 		glBegin(GL_QUADS);
 		glVertex3f(i * this->_space, pt1, -this->_depth);
@@ -74,12 +73,22 @@ void Floor::draw(bool shadow)
 		glVertex3f((i + 1) * this->_space, pt2, this->_depth);
 		glVertex3f((i + 1) * this->_space, pt2, -this->_depth);
 		glEnd();
+		pt1 = pt2;
 	}
-
 	glPopMatrix(); //restore the coord system
 }
 
 void Floor::setChunkSize(size_t size)
 {
 	this->_chunkSize = size;
+}
+
+void Floor::setLeft(size_t left)
+{
+	this->_left = left;
+}
+
+void Floor::setLeftX(float x)
+{
+	this->setLeft(static_cast<int>(x / this->_space) % this->_points.size());
 }
