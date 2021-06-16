@@ -15,8 +15,13 @@ MyBuoyancy::MyBuoyancy(const MyObject* obj, real _liquidLevelHeight, real _liqui
 
 void MyBuoyancy::setTarget(const MyObject* obj)
 {
-	objMaxDepth = obj->getHeight();
-	volume = obj->getVolume();
+	if (obj)
+	{
+		obj->forces->remove(obj->particle, this);
+		objMaxDepth = obj->getHeight();
+		volume = obj->getVolume();
+		obj->forces->add(obj->particle, this);
+	}
 }
 
 void MyBuoyancy::updateForce(Particle* p, real duration)

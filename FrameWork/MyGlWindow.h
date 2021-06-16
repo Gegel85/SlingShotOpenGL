@@ -8,6 +8,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <Fl/Fl_Double_Window.h>
+#include <functional>
 
 #include "stdio.h"
 #include "math.h"
@@ -20,7 +21,8 @@
 #include "core.h"
 #include "particle.h"
 #include "MyFiles/Physics/Forces/MyBuoyancy.h"
-#include "MyFiles/Physics/Objects/MyCube.h"
+#include "MyFiles/Physics/Objects/MySphere.h"
+#include "Floor.h"
 
 class MyGlWindow : public Fl_Gl_Window {
 public:
@@ -37,11 +39,13 @@ public:
 
 	Fl_Slider* time;
 	int run;
+	void resetGame();
 	void update();
 	void drawStuff();
 	void doPick();
-	void windActive(bool active);
-	void cubeAction(int i);
+	void setScoreCallback(void(*callback)(const float&)) {
+		scoreCallback = callback;
+	};
 
 private:
 	void draw();					// standard FlTk
@@ -49,17 +53,22 @@ private:
 	void putText(char* string, int x, int y, float r, float g, float b);
 	int handle(int);				// standard FlTk
 
+	int frames = 0;
+
 	float fieldOfView;
 	Viewer* m_viewer;
 	char* m_mvt_type;
 	MyWorldSpec* m_world;
 	std::vector<IMyRender*> m_renderable;
 	MyBuoyancy* fluid;
+	Floor* floor;
 	std::vector<MyObject*> m_objects;
 	int m_selected = -1;
-	bool rotateCube = false;
+	void (*scoreCallback)(const float&);
 
 	void setProjection(int clearProjection = 1);
 	void getMouseNDC(float& x, float& y);
 	void setupLight(float x, float y, float z);
+	void setupForces();
+	void setupObjects();
 };

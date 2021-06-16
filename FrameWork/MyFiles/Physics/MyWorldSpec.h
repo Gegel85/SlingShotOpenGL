@@ -4,7 +4,6 @@
 
 class MyWorldSpec {
 public:
-	cyclone::ParticleGravity* wind;
 	cyclone::ParticleGravity* gravity;
 	cyclone::Vector3 g;
 

@@ -1,7 +1,6 @@
 #include "MyGlWindow.h"
 
 #include <iostream>
-#include "Floor.h"
 #include "drawUtils.h"
 #include "timing.h"
 
@@ -25,7 +24,6 @@ void drawStrokeText(char* string, int x, int y, int z)
 
 void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 {
-
 	glDisable(GL_LIGHTING);
 
 	glMatrixMode(GL_PROJECTION);
@@ -35,20 +33,20 @@ void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 
 	ortho();
 
-
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
-
 
 	glColor3f(r, g, b);
 	drawStrokeText(string, x, y, 0);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-
-
 }
 
+void MyGlWindow::resetGame() {
+	floor->regenerate();
+	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
+}
 
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	Fl_Gl_Window(x, y, w, h)
@@ -69,19 +67,26 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	TimingData::init();
 	run = 0;
 
+	setupForces();
+	setupObjects();
+}
+
+void MyGlWindow::setupForces() {
 	m_world = new MyWorldSpec(cyclone::Vector3::GRAVITY);
-	m_mvt_type = (char*)" ";
+	fluid = new MyBuoyancy(nullptr, 10, 1, m_world);
+	m_renderable.push_back(fluid);
+}
 
-	m_objects.push_back(new MyCube(1, 1, 1, 1, m_world));
-	m_objects[0]->setPosition(cyclone::Vector3(0, 5, 0));
+void MyGlWindow::setupObjects() {
+	m_objects.push_back(new MySphere(2, 2, m_world));
+	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
+	m_objects[0]->forces->add(m_objects[0]->particle, fluid);
+	fluid->setTarget(m_objects[0]);
 
-	auto f = new Floor(m_world);
-
-	f->setChunkSize(5000);
-	m_objects.push_back(f);
-	m_objects[1]->setPosition(cyclone::Vector3(0, 0, 0));
-
-	fluid = new MyBuoyancy(0, 10, 1, m_world);
+	floor = new Floor(m_world);
+	floor->setChunkSize(1000);
+	floor->setPosition(cyclone::Vector3(-10, 0, 0));
+	m_renderable.push_back(floor);
 }
 
 
@@ -152,11 +157,13 @@ void MyGlWindow::draw()
 
 	// now draw the ground plane
 	setProjection();
+/*
 	setupFloor();
 
 	glPushMatrix();
 	drawFloor(200, 20);
 	glPopMatrix();
+*/
 
 	setupLight(m_viewer->getViewPoint().x, m_viewer->getViewPoint().y, m_viewer->getViewPoint().z);
 
@@ -216,33 +223,6 @@ void MyGlWindow::draw()
 
 }
 
-void MyGlWindow::windActive(bool wind)
-{
-	if (wind == true)
-		*m_world->wind = cyclone::ParticleGravity(cyclone::Vector3(3, 0, 0));
-	else
-		*m_world->wind = cyclone::ParticleGravity(cyclone::Vector3());
-}
-
-void MyGlWindow::cubeAction(int i)
-{
-	switch (i)
-	{
-	case 0:
-		rotateCube = !rotateCube;
-		break;
-	case 1:
-		m_objects[0]->addRotation(45, m_objects[0]->getAxisFromTransform().getAxisVector(1));
-		break;
-	case 2:
-		m_objects[0]->addRotation(45, m_objects[0]->getAxisFromTransform().getAxisVector(1));
-		m_objects[0]->addRotation(90, m_objects[0]->getAxisFromTransform().getAxisVector(0));
-		break;
-	default:
-		break;
-	}
-}
-
 void MyGlWindow::update()
 {
 	TimingData::get().update();
@@ -251,9 +231,8 @@ void MyGlWindow::update()
 
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 
-	if (rotateCube) {
-		m_objects[0]->addRotation(0.5, cyclone::Vector3(0, 1, 0));
-	}
+	if (scoreCallback)
+		scoreCallback(std::roundf(m_objects[0]->particle->getPosition().x * 100.0f) / 100.0f);
 
 	for (auto item : m_objects)
 	{
@@ -388,7 +367,7 @@ int MyGlWindow::handle(int e)
 					static_cast<double>(m_objects[m_selected]->particle->getPosition().y),
 					static_cast<double>(m_objects[m_selected]->particle->getPosition().z),
 					rx, ry, rz,
-					(Fl::event_state() & FL_CTRL) != 0);
+					1);
 				m_objects[m_selected]->particle->setPosition(rx, ry, rz);
 			}
 			else
