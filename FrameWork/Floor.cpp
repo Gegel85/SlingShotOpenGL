@@ -25,16 +25,16 @@ void Floor::regenerate(size_t sidesBeforeRepeat, float spaceBetweenSides, float 
 {
 	assert(sidesBeforeRepeat > 0);
 	this->_points.clear();
-	this->_points.reserve(sidesBeforeRepeat + 1);
+	this->_points.reserve(sidesBeforeRepeat);
 	this->_space = spaceBetweenSides;
 	this->_min = minValue;
 	this->_max = maxValue;
 	do  {
 		this->_points.push_back(startValue);
-		printf("%f\n", startValue);
 		startValue = randFct(startValue - maxDelta, startValue + maxDelta);
 		startValue = max(min(startValue, maxValue), minValue);
-	} while (sidesBeforeRepeat--);
+	} while (--sidesBeforeRepeat);
+	this->setLeftX(0);
 }
 
 std::vector<cyclone::Vector3> Floor::getAnglePoints(float x1, float x2)
@@ -76,13 +76,13 @@ void Floor::draw(bool shadow)
 		auto pt2 = this->_points[j];
 
 		glBegin(GL_QUADS);
-		glVertex3f(i * this->_space, pt1, -this->_depth);
-		glVertex3f(i * this->_space, pt1, this->_depth);
+		glVertex3f(i * this->_space - this->_leftPad, pt1, -this->_depth);
+		glVertex3f(i * this->_space - this->_leftPad, pt1, this->_depth);
 
 		if (!shadow)
 			glColor3f(0, (pt2 + this->_min) / this->_max, 0);
-		glVertex3f((i + 1) * this->_space, pt2, this->_depth);
-		glVertex3f((i + 1) * this->_space, pt2, -this->_depth);
+		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, this->_depth);
+		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, -this->_depth);
 		glEnd();
 		pt1 = pt2;
 	}
@@ -101,6 +101,6 @@ void Floor::setLeft(size_t left)
 
 void Floor::setLeftX(float x)
 {
-	this->setLeft(static_cast<int>(x / this->_space) % this->_points.size());
-	this->_leftPad = fmod(x / this->_space, 1);
+	this->setLeft(static_cast<size_t>(this->_points.size() + static_cast<int>(x / this->_space) % static_cast<int>(this->_points.size())) % this->_points.size());
+	this->_leftPad = fmod(this->_space + fmod(x, this->_space), this->_space);
 }

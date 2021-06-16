@@ -8,6 +8,16 @@ static double DEFAULT_VIEW_POINT[3] = { 30, 30, 30 };
 static double DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
 static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 
+#define DEPTH 10
+#define NB_POINTS 1000
+#define SPACE 10
+#define MIN_FLOOR_Y 0
+#define MAX_FLOOR_Y 100
+#define START_VALUE 25
+#define MAX_DELTA 8
+#define CHUNK_SIZE 20
+#define LEFT_POSITION -50
+
 void drawStrokeText(char* string, int x, int y, int z)
 {
 	char* c;
@@ -43,8 +53,11 @@ void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 	glEnable(GL_LIGHTING);
 }
 
-void MyGlWindow::resetGame() {
-	floor->regenerate();
+void MyGlWindow::resetGame()
+{
+	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
+	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
+	floor->setLeftX(LEFT_POSITION);
 	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
 }
 
@@ -83,9 +96,10 @@ void MyGlWindow::setupObjects() {
 	m_objects[0]->forces->add(m_objects[0]->particle, fluid);
 	fluid->setTarget(m_objects[0]);
 
-	floor = new Floor(m_world);
-	floor->setChunkSize(1000);
-	floor->setPosition(cyclone::Vector3(-10, 0, 0));
+	floor = new Floor(m_world, DEPTH, NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
+	floor->setChunkSize(CHUNK_SIZE);
+	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
+	floor->setLeftX(LEFT_POSITION);
 	m_renderable.push_back(floor);
 }
 
