@@ -150,6 +150,9 @@
     <ClCompile Include="MyFiles\Physics\MyWorldSpec.cpp">
       <Filter>MyFiles\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>MyFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MMatrix.H">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="MyFiles\Physics\MyWorldSpec.h">
       <Filter>MyFiles\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>MyFiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

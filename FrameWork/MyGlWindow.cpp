@@ -1,6 +1,7 @@
 #include "MyGlWindow.h"
 
 #include <iostream>
+#include "Floor.h"
 #include "drawUtils.h"
 #include "timing.h"
 
@@ -73,9 +74,10 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 	m_objects.push_back(new MyCube(1, 1, 1, 1, m_world));
 	m_objects[0]->setPosition(cyclone::Vector3(0, 5, 0));
+	m_objects.push_back(new Floor(m_world));
+	m_objects[1]->setPosition(cyclone::Vector3(0, 0, 0));
 
 	fluid = new MyBuoyancy(0, 10, 1, m_world);
-
 }
 
 

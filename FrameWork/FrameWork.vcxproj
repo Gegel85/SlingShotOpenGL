@@ -27,6 +27,7 @@
     <ClCompile Include="..\Cyclone\world.cpp" />
     <ClCompile Include="3DUtils.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
+    <ClCompile Include="Floor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MMatrix.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MyAnchoredSpring.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="..\Cyclone\world.h" />
     <ClInclude Include="3DUtils.h" />
     <ClInclude Include="DrawUtils.H" />
+    <ClInclude Include="Floor.h" />
     <ClInclude Include="MMatrix.H" />
     <ClInclude Include="MyFiles\Display\IMyRender.h" />
     <ClInclude Include="MyFiles\Physics\Forces\AMyAnchoredForce.h" />
