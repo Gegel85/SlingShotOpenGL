@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="base">
+      <UniqueIdentifier>{d30e8971-8033-49e1-8059-be32fb1429a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles">
+      <UniqueIdentifier>{a8a25e9d-0b4e-4660-866c-7d77982f2f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Header">
+      <UniqueIdentifier>{4530e4c7-45f7-4a4b-833c-23d5ab8c3c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Class">
+      <UniqueIdentifier>{01fe21fb-0e27-4be3-b714-e3b144f462a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Cyclone">
+      <UniqueIdentifier>{8c6ab28d-1234-44e0-9391-11e5bb1cec1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Display">
+      <UniqueIdentifier>{bc035660-8b33-44ff-8194-1fd62c0c3f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics">
+      <UniqueIdentifier>{60aa8b63-bc94-47b0-8391-3f863e5904d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics\Objects">
+      <UniqueIdentifier>{d7b78192-61aa-4b83-8968-018eb5ce818f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics\Colliders">
+      <UniqueIdentifier>{1b5ac79e-eae4-4adf-b624-b6f37f6fe338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics\Forces">
+      <UniqueIdentifier>{6537ecaa-17dc-4e2c-ba80-b362b6d1c36f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics\Transform">
+      <UniqueIdentifier>{0f0ace80-afd4-4095-b915-426706e96870}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="MMatrix.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="MyGlWindow.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="timing.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewer.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="3DUtils.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawUtils.cpp">
+      <Filter>base\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\body.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\collide_coarse.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\collide_fine.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\contacts.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\core.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\fgen.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\joints.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\particle.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\pcontacts.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\pfgen.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\plinks.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\pworld.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\random.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cyclone\world.cpp">
+      <Filter>base\Cyclone</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\Artillery.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\FireBall.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\Floater.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\Laser.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\MyCube.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\MyObject.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\MySphere.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\Pistol.cpp">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\MyAnchoredSpring.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\MyBuoyancy.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\MyParticleMagnet.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\MySpring.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Transform\Rotation.cpp">
+      <Filter>MyFiles\Physics\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\ObjectConnection.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Forces\PoleConnection.cpp">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\MyWorldSpec.cpp">
+      <Filter>MyFiles\Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MMatrix.H">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGlWindow.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3f.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="timing.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewer.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="3DUtils.h">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawUtils.H">
+      <Filter>base\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\body.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\collide_coarse.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\collide_fine.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\contacts.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\core.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\cyclone.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\fgen.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\glut.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\joints.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\particle.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\pcontacts.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\pfgen.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\plinks.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\precision.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\pworld.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\random.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cyclone\world.h">
+      <Filter>base\Cyclone</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\Artillery.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\FireBall.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\Floater.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\Laser.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\MyCube.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\MyObject.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\MySphere.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\Pistol.h">
+      <Filter>MyFiles\Physics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\MyAnchoredSpring.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\MyBuoyancy.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\MyParticleMagnet.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\MySpring.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Transform\Rotation.h">
+      <Filter>MyFiles\Physics\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Display\IMyRender.h">
+      <Filter>MyFiles\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\AMyAnchoredForce.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\AMyConnection.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\ObjectConnection.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Forces\PoleConnection.h">
+      <Filter>MyFiles\Physics\Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\MyWorldSpec.h">
+      <Filter>MyFiles\Physics</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
