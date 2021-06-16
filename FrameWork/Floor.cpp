@@ -23,6 +23,7 @@ Floor::Floor(const MyWorldSpec* env, float depth, size_t sidesBeforeRepeat, floa
 void Floor::regenerate(size_t sidesBeforeRepeat, float spaceBetweenSides, float minValue, float maxValue, float startValue, float maxDelta, float (*randFct)(float min, float max))
 {
 	assert(sidesBeforeRepeat > 0);
+	this->_points.clear();
 	this->_points.reserve(sidesBeforeRepeat + 1);
 	this->_space = spaceBetweenSides;
 	this->_min = minValue;
@@ -37,7 +38,10 @@ void Floor::regenerate(size_t sidesBeforeRepeat, float spaceBetweenSides, float 
 
 std::pair<float, float> Floor::getVector(float x)
 {
-	return { 0, 0 };
+	auto v1 = static_cast<int>(x / this->_space) % this->_points.size();
+	auto v2 = (static_cast<int>(x / this->_space) + 1) % this->_points.size();
+
+	return { this->_points[v1], this->_points[v2] };
 }
 
 void Floor::setDepth(float depth)
@@ -91,4 +95,5 @@ void Floor::setLeft(size_t left)
 void Floor::setLeftX(float x)
 {
 	this->setLeft(static_cast<int>(x / this->_space) % this->_points.size());
+	this->_leftPad = fmod(x / this->_space, 1);
 }
