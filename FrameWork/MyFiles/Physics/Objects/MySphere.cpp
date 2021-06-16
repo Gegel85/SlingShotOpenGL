@@ -1,5 +1,5 @@
 #include "MySphere.h"
-#include "../../DrawUtils.H"
+#include "../../../DrawUtils.H"
 
 MySphere::MySphere(cyclone::real radius, cyclone::real mass, const MyWorldSpec* env) : MyObject(mass, env)
 {
