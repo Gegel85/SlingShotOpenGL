@@ -102,18 +102,6 @@
     <ClCompile Include="..\Cyclone\world.cpp">
       <Filter>base\Cyclone</Filter>
     </ClCompile>
-    <ClCompile Include="MyFiles\Physics\Objects\Artillery.cpp">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="MyFiles\Physics\Objects\FireBall.cpp">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="MyFiles\Physics\Objects\Floater.cpp">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="MyFiles\Physics\Objects\Laser.cpp">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="MyFiles\Physics\Objects\MyCube.cpp">
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClCompile>
@@ -121,9 +109,6 @@
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MyFiles\Physics\Objects\MySphere.cpp">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="MyFiles\Physics\Objects\Pistol.cpp">
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MyFiles\Physics\Forces\MyAnchoredSpring.cpp">
@@ -230,18 +215,6 @@
     <ClInclude Include="..\Cyclone\world.h">
       <Filter>base\Cyclone</Filter>
     </ClInclude>
-    <ClInclude Include="MyFiles\Physics\Objects\Artillery.h">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MyFiles\Physics\Objects\FireBall.h">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MyFiles\Physics\Objects\Floater.h">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MyFiles\Physics\Objects\Laser.h">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="MyFiles\Physics\Objects\MyCube.h">
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClInclude>
@@ -249,9 +222,6 @@
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MyFiles\Physics\Objects\MySphere.h">
-      <Filter>MyFiles\Physics\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MyFiles\Physics\Objects\Pistol.h">
       <Filter>MyFiles\Physics\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MyFiles\Physics\Forces\MyAnchoredSpring.h">
