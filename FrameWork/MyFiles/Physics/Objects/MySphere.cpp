@@ -23,12 +23,6 @@ const cyclone::real MySphere::getVolume() const
 	return 4.0 / 3.0 * pi * pow(radius, 3);
 }
 
-void MySphere::update(cyclone::real duration)
-{
-	forces->updateForces(duration);
-	particle->integrate(duration);
-}
-
 void MySphere::draw(bool shadow)
 {
 	if (shadow)

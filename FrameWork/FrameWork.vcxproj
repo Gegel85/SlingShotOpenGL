@@ -40,6 +40,7 @@
     <ClCompile Include="MyFiles\Physics\Objects\MyCube.cpp" />
     <ClCompile Include="MyFiles\Physics\Objects\MyObject.cpp" />
     <ClCompile Include="MyFiles\Physics\Objects\MySphere.cpp" />
+    <ClCompile Include="MyFiles\Physics\Objects\MyLiquid.cpp" />
     <ClCompile Include="MyFiles\Physics\Transform\Rotation.cpp" />
     <ClCompile Include="MyGlWindow.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="MyFiles\Physics\Objects\MyCube.h" />
     <ClInclude Include="MyFiles\Physics\Objects\MyObject.h" />
     <ClInclude Include="MyFiles\Physics\Objects\MySphere.h" />
+    <ClInclude Include="MyFiles\Physics\Objects\MyLiquid.h" />
     <ClInclude Include="MyFiles\Physics\Transform\Rotation.h" />
     <ClInclude Include="MyGlWindow.h" />
     <ClInclude Include="stdafx.h" />

@@ -138,6 +138,7 @@
     <ClCompile Include="Floor.cpp">
       <Filter>MyFiles</Filter>
     </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Objects\MyLiquid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MMatrix.H">
@@ -260,5 +261,6 @@
     <ClInclude Include="Floor.h">
       <Filter>MyFiles</Filter>
     </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Objects\MyLiquid.h" />
   </ItemGroup>
 </Project>

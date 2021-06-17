@@ -15,7 +15,6 @@ public:
 	virtual const cyclone::real getDensity() const override;
 	virtual const cyclone::real getHeight() const override;
 	virtual const cyclone::real getVolume() const override;
-	virtual void update(cyclone::real duration = 0) override;
 	virtual void draw(bool shadow) override;
 
 protected:

@@ -82,4 +82,14 @@ void MyObject::drawAxes(float l)
 	glVertex3f(0, 0, l);
 	glEnd();
 	glLineWidth(1.0f);
-};
+}
+
+void MyObject::update(cyclone::real duration)
+{
+	if (m_static)return;
+	forces->updateForces(duration);
+	particle->integrate(duration);
+	transform.data[3] = particle->getPosition().x;
+	transform.data[7] = particle->getPosition().y;
+	transform.data[11] = particle->getPosition().z;
+}

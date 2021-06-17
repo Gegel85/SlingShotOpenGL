@@ -22,6 +22,7 @@
 #include "particle.h"
 #include "MyFiles/Physics/Forces/MyBuoyancy.h"
 #include "MyFiles/Physics/Objects/MySphere.h"
+#include "MyFiles/Physics/Objects/MyLiquid.h"
 #include "Floor.h"
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -59,10 +60,11 @@ private:
 	Viewer* m_viewer;
 	char* m_mvt_type;
 	MyWorldSpec* m_world;
-	std::vector<IMyRender*> m_renderable;
-	MyBuoyancy* fluid;
+	std::vector<IMyRender*> m_renderables;
+	std::vector<std::pair<MyObject*, bool>> m_objects;
+	MyLiquid* water;
 	Floor* floor;
-	std::vector<MyObject*> m_objects;
+	MyObject* player;
 	int m_selected = -1;
 	void (*scoreCallback)(const float&);
 

@@ -13,6 +13,8 @@ public:
 	cyclone::ParticleForceRegistry* forces;
 	cyclone::Quaternion orientation;
 	cyclone::Matrix4 transform;
+	bool m_static = false;
+
 
 	MyObject(cyclone::real mass, const MyWorldSpec* env);
 
@@ -31,14 +33,7 @@ public:
 	void drawAxes(float length);
 
 	// Hérité via IMyRender
-	virtual void update(cyclone::real duration = 0) override
-	{
-		forces->updateForces(duration);
-		particle->integrate(duration);
-		transform.data[3] = particle->getPosition().x;
-		transform.data[7] = particle->getPosition().y;
-		transform.data[11] = particle->getPosition().z;
-	};
+	virtual void update(cyclone::real duration = 0) override;
 	virtual void draw(bool shadow) override = 0;
 
 protected:

@@ -58,7 +58,7 @@ void MyGlWindow::resetGame()
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
-	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
+	player->resetTranslation(cyclone::Vector3(0, 1, 0));
 }
 
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
@@ -86,23 +86,26 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 void MyGlWindow::setupForces() {
 	m_world = new MyWorldSpec(cyclone::Vector3::GRAVITY);
-	fluid = new MyBuoyancy(nullptr, 10, 1, m_world);
-	m_renderable.push_back(fluid);
+	water = new MyLiquid(MAX_DELTA, 1, m_world);
+	water->setPosition(cyclone::Vector3(0, MIN_FLOOR_Y, 0));
+	water->width = 30;
+	water->length = 200;
 }
 
 void MyGlWindow::setupObjects() {
-	m_objects.push_back(new MySphere(2, 2, m_world));
-	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
-	m_objects[0]->particle->setVelocity(10, 0, 0);
-	m_objects[0]->forces->add(m_objects[0]->particle, fluid);
-	fluid->setTarget(m_objects[0]);
+	player = new MySphere(2, 2, m_world);
+	player->particle->setDamping(0.7),
+		m_objects.emplace_back(player, true);
+	player->resetTranslation(cyclone::Vector3(0, 1, 0));
+	water->m_force->setTarget(player);
 
 	floor = new Floor(m_world, DEPTH, NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setChunkSize(CHUNK_SIZE);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, -15, 0));
 	floor->setLeftX(LEFT_POSITION);
 	floor->setBottom(-100);
-	m_renderable.push_back(floor);
+	m_objects.emplace_back(floor, false);
+	m_objects.emplace_back(water, false);
 }
 
 
@@ -173,13 +176,13 @@ void MyGlWindow::draw()
 
 	// now draw the ground plane
 	setProjection();
-/*
-	setupFloor();
+	/*
+		setupFloor();
 
-	glPushMatrix();
-	drawFloor(200, 20);
-	glPopMatrix();
-*/
+		glPushMatrix();
+		drawFloor(200, 20);
+		glPopMatrix();
+	*/
 
 	setupLight(m_viewer->getViewPoint().x, m_viewer->getViewPoint().y, m_viewer->getViewPoint().z);
 
@@ -210,28 +213,28 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	for (auto item : m_renderable)
+	for (auto item : m_renderables)
 	{
 		item->draw(1);
 	}
 	for (auto item : m_objects)
 	{
-		item->draw(1);
+		item.first->draw(1);
 	}
 	unsetupShadows();
 
-	//draw Objects and stuff
+	for (auto item : m_renderables)
+	{
+		item->draw(0);
+	}
+
 	for (auto item : m_objects)
 	{
-		item->draw(0);
+		item.first->draw(0);
 	}
+
 
 	glEnable(GL_LIGHTING);
-
-	for (auto item : m_renderable)
-	{
-		item->draw(0);
-	}
 
 	//draw objects
 
@@ -248,21 +251,27 @@ void MyGlWindow::update()
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 
 	if (scoreCallback)
-		scoreCallback(std::roundf(m_objects[0]->particle->getPosition().x * 100.0f) / 100.0f);
+		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
 
-	for (auto item : m_objects)
+	for (auto item : m_renderables)
 	{
 		item->update(duration);
 	}
 
-	auto p = this->m_objects[0]->particle->getPosition();
+	for (auto item : m_objects)
+	{
+		item.first->update(duration);
+	}
+	auto p = player->particle->getPosition();
 	auto p2 = this->floor->particle->getPosition();
-	auto v = this->m_objects[0]->particle->getVelocity();
+	auto v = player->particle->getVelocity();
 	auto zoom = 0.75 + std::log10(std::abs(v.x) + 0.5) / 2;
+
+	water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
 
 	this->m_viewer->setZoom(zoom);
 	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
-	this->floor->particle->setPosition(p.x + LEFT_POSITION, p2.y, p2.z);
+	this->floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
 	this->floor->setLeftX(p.x + LEFT_POSITION);
 }
 
@@ -297,7 +306,8 @@ void MyGlWindow::doPick()
 	for (size_t i = 0; i < m_objects.size(); ++i) {
 		std::cout << "try pick: " << i << std::endl;
 		glLoadName((GLuint)(i + 1));
-		m_objects[i]->draw(0);
+		if (m_objects[i].second)
+			m_objects[i].first->draw(0);
 	}
 
 	// go back to drawing mode, and see how picking did
@@ -365,6 +375,7 @@ int MyGlWindow::handle(int e)
 			std::cout << "click" << std::endl;
 			doPick();
 			if (m_selected >= 0) {
+				m_objects[m_selected].first->m_static = true;
 				std::cout << "picked" << std::endl;
 			}
 		}
@@ -372,6 +383,8 @@ int MyGlWindow::handle(int e)
 		return 1;
 	}
 	case FL_RELEASE:
+		if (m_selected >= 0)
+			m_objects[m_selected].first->m_static = false;
 		m_pressedMouseButton = -1;
 		damage(1);
 		return 1;
@@ -384,17 +397,18 @@ int MyGlWindow::handle(int e)
 		if (m_pressedMouseButton == 1) {
 			if (m_selected >= 0)
 			{
+				m_objects[m_selected].first->m_static = true;
 				double r1x, r1y, r1z, r2x, r2y, r2z;
 				getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
 
 				double rx, ry, rz;
 				mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
-					static_cast<double>(m_objects[m_selected]->particle->getPosition().x),
-					static_cast<double>(m_objects[m_selected]->particle->getPosition().y),
-					static_cast<double>(m_objects[m_selected]->particle->getPosition().z),
+					static_cast<double>(m_objects[m_selected].first->particle->getPosition().x),
+					static_cast<double>(m_objects[m_selected].first->particle->getPosition().y),
+					static_cast<double>(m_objects[m_selected].first->particle->getPosition().z),
 					rx, ry, rz,
 					1);
-				m_objects[m_selected]->particle->setPosition(rx, ry, rz);
+				m_objects[m_selected].first->particle->setPosition(rx, ry, rz);
 			}
 			else
 			{

@@ -12,7 +12,6 @@ MyBuoyancy::MyBuoyancy(const MyObject* obj, real _liquidLevelHeight, real _liqui
 	height = _liquidLevelHeight;
 	liquidDensity = _liquidDensity;
 }
-
 void MyBuoyancy::setTarget(const MyObject* obj)
 {
 	if (obj)
@@ -42,24 +41,3 @@ void MyBuoyancy::updateForce(Particle* p, real duration)
 
 	p->addForce(force);
 }
-
-
-void MyBuoyancy::update(cyclone::real duration)
-{
-}
-
-void MyBuoyancy::draw(bool shadow)
-{
-	if (shadow)
-		return;
-	double h = 10.0;
-	glDisable(GL_LIGHTING);
-	glEnable(GL_BLEND);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glPushMatrix();
-	glColor4f(0, 0, 1, 0.2f);
-	glTranslatef(0, height - h / 2, 0);
-	drawCube(100, h, 100); //illustrate water
-	glPopMatrix();
-}
-
