@@ -90,13 +90,19 @@ void Floor::draw(bool shadow)
 		auto pt2 = this->_points[j];
 
 		glBegin(GL_QUADS);
-		if (!shadow)
-			glColor3f(0, (pt1 - this->_min) / (this->_max - this->_min), 0);
+		if (!shadow) {
+			auto f = (pt1 - this->_min) / (this->_max - this->_min);
+
+			glColor3f(0.2 * (1 - f), f, 0);
+		}
 		glVertex3f(i * this->_space - this->_leftPad, pt1, -this->_depth);
 		glVertex3f(i * this->_space - this->_leftPad, pt1, this->_depth);
 
-		if (!shadow)
-			glColor3f(0, (pt2 - this->_min) / (this->_max - this->_min), 0);
+		if (!shadow) {
+			auto f = (pt2 - this->_min) / (this->_max - this->_min);
+
+			glColor3f(0.2 * (1 - f), f, 0);
+		}
 		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, this->_depth);
 		glVertex3f((i + 1) * this->_space - this->_leftPad, pt2, -this->_depth);
 
@@ -130,6 +136,11 @@ void Floor::setLeft(size_t left)
 
 void Floor::setLeftX(float x)
 {
-	this->setLeft(static_cast<size_t>(this->_points.size() + static_cast<int>(x / this->_space) % static_cast<int>(this->_points.size())) % this->_points.size());
+	if (x < 0)
+		x -= this->_space;
+	this->setLeft(static_cast<size_t>(
+		this->_points.size() +
+		static_cast<int>(x / this->_space) % static_cast<int>(this->_points.size())
+	) % this->_points.size());
 	this->_leftPad = fmod(this->_space + fmod(x, this->_space), this->_space);
 }

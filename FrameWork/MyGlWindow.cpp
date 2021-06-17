@@ -256,11 +256,14 @@ void MyGlWindow::update()
 	}
 
 	auto p = this->m_objects[0]->particle->getPosition();
+	auto p2 = this->floor->particle->getPosition();
 	auto v = this->m_objects[0]->particle->getVelocity();
 	auto zoom = 0.75 + std::log10(std::abs(v.x) + 0.5) / 2;
 
 	this->m_viewer->setZoom(zoom);
 	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
+	this->floor->particle->setPosition(p.x + LEFT_POSITION, p2.y, p2.z);
+	this->floor->setLeftX(p.x + LEFT_POSITION);
 }
 
 
