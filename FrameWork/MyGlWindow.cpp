@@ -4,19 +4,19 @@
 #include "drawUtils.h"
 #include "timing.h"
 
-static double DEFAULT_VIEW_POINT[3] = { 30, 30, 30 };
-static double DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
+static double DEFAULT_VIEW_POINT[3] = { 53, 77.951, 74.6012 };
+static double DEFAULT_VIEW_CENTER[3] = { 53, -20.46, -17.7185 };
 static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 
-#define DEPTH 10
+#define DEPTH 20
 #define NB_POINTS 1000
 #define SPACE 10
 #define MIN_FLOOR_Y 10
 #define MAX_FLOOR_Y 60
 #define START_VALUE 35
 #define MAX_DELTA 8
-#define CHUNK_SIZE 20
-#define LEFT_POSITION -50
+#define CHUNK_SIZE 50
+#define LEFT_POSITION -150
 
 void drawStrokeText(char* string, int x, int y, int z)
 {
@@ -93,12 +93,13 @@ void MyGlWindow::setupForces() {
 void MyGlWindow::setupObjects() {
 	m_objects.push_back(new MySphere(2, 2, m_world));
 	m_objects[0]->resetTranslation(cyclone::Vector3(0, 1, 0));
+	m_objects[0]->particle->setVelocity(10, 0, 0);
 	m_objects[0]->forces->add(m_objects[0]->particle, fluid);
 	fluid->setTarget(m_objects[0]);
 
 	floor = new Floor(m_world, DEPTH, NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setChunkSize(CHUNK_SIZE);
-	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
+	floor->setPosition(cyclone::Vector3(LEFT_POSITION, -15, 0));
 	floor->setLeftX(LEFT_POSITION);
 	floor->setBottom(-100);
 	m_renderable.push_back(floor);
@@ -253,6 +254,13 @@ void MyGlWindow::update()
 	{
 		item->update(duration);
 	}
+
+	auto p = this->m_objects[0]->particle->getPosition();
+	auto v = this->m_objects[0]->particle->getVelocity();
+	auto zoom = 0.75 + std::log10(std::abs(v.x) + 0.5) / 2;
+
+	this->m_viewer->setZoom(zoom);
+	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
 }
 
 
@@ -399,7 +407,8 @@ int MyGlWindow::handle(int e)
 		else {
 			std::cout << "Warning: dragging with unknown mouse button!  Nothing will be done" << std::endl;
 		}
-
+		std::cout << m_viewer->getViewPoint().x << " " << m_viewer->getViewPoint().y << " " << m_viewer->getViewPoint().z << ":"
+			<< m_viewer->getViewCenter().x << " " << m_viewer->getViewCenter().y << " " << m_viewer->getViewCenter().z << std::endl;
 		m_lastMouseX = Fl::event_x();
 		m_lastMouseY = Fl::event_y();
 		redraw();

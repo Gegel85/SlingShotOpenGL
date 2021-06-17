@@ -40,16 +40,15 @@ void Viewer::translate(float changeHoriz, float changeVert, bool inImagePlane) {
 		translateVec = (m_viewCenter - m_viewPoint) * changeVert;
 	}
 	translateVec *= m_translateSpeed;
-
-	m_viewPoint += translateVec;
-	m_viewCenter += translateVec;
+	translateVec *= this->m_zoom;
+	this->m_translate += translateVec;
 }
 
 void Viewer::zoom(float changeVert) {
 
 	float scaleFactor = powf(2.0, -changeVert * m_zoomFraction);
-	m_viewPoint = m_viewCenter + (m_viewPoint - m_viewCenter) * scaleFactor;
 
+	this->m_zoom *= scaleFactor;
 	getFrustrumInfo();
 }
 
@@ -126,11 +125,11 @@ void Viewer::lookFrom(const glm::vec3 &pos) {
 }
 
 glm::vec3 Viewer::getViewPoint() const {
-	return( m_viewPoint );
+	return( m_viewCenter + (m_viewPoint - m_viewCenter) * this->m_zoom + this->m_translate );
 }
 
 glm::vec3 Viewer::getViewCenter() const {
-	return( m_viewCenter );
+	return( m_viewCenter + this->m_translate);
 }
 
 glm::vec3 Viewer::getUpVector() const {
@@ -185,8 +184,9 @@ void Viewer::setRotateSpeed(float rotateSpeed) {
 
 void Viewer::getFrustrumInfo() {
 	// Get the viewing direction
+	auto vpt = m_viewCenter + (m_viewPoint - m_viewCenter) * this->m_zoom;
 
-	m_viewDir = m_viewCenter - m_viewPoint;
+	m_viewDir = m_viewCenter - vpt;
 	m_viewDir = glm::normalize(m_viewDir);
 
 	// Get the vertical image-plane direction (the projection of the up vector into the view plane)
@@ -200,6 +200,27 @@ void Viewer::getFrustrumInfo() {
 	m_imagePlaneHorizDir = glm::normalize(m_imagePlaneHorizDir);
 
 	// Get the view plane width and height at the view center.
-	m_displayHeight = 2.0 * glm::length(m_viewCenter-m_viewPoint) * tan(0.5*m_fieldOfView);
+	m_displayHeight = 2.0 * glm::length(m_viewCenter-vpt) * tan(0.5*m_fieldOfView);
 	m_displayWidth = m_displayHeight * m_aspectRatio;
+}
+
+
+glm::vec3 Viewer::getTranslate() const
+{
+	return this->m_translate;
+}
+
+float Viewer::getZoom() const
+{
+	return this->m_zoom;
+}
+
+void Viewer::setTranslate(glm::vec3 translate)
+{
+	this->m_translate = translate;
+}
+
+void Viewer::setZoom(float zoom)
+{
+	this->m_zoom = zoom;
 }

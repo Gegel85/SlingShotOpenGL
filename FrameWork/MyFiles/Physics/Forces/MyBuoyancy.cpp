@@ -34,12 +34,10 @@ void MyBuoyancy::updateForce(Particle* p, real duration)
 	}
 	else if (h + objMaxDepth < height) {
 		force = cyclone::Vector3(0, volume * liquidDensity, 0);
-		std::cout << "mass moved: " << volume * liquidDensity / abs(m_env->g.y) << std::endl;
 	}
 	else {
 		double d = (height - (h - objMaxDepth)) / (2 * objMaxDepth);
 		force = cyclone::Vector3(0, d * volume * liquidDensity, 0);
-		std::cout << "mass moved: " << d * volume * liquidDensity / abs(m_env->g.y) << std::endl;
 	}
 
 	p->addForce(force);

@@ -39,6 +39,10 @@ class Viewer {
 		glm::vec3 getUpVector() const;
 		float getFieldOfView() const;
 		float getAspectRatio() const;
+		glm::vec3 getTranslate() const;
+		float getZoom() const;
+		void setTranslate(glm::vec3 translate);
+		void setZoom(float zoom);
 
 		/** The (normalized) worldspace vector from the viewpoint	to the view center */
 		glm::vec3 getViewDir() const;
@@ -136,6 +140,8 @@ class Viewer {
 		glm::vec3 m_upVector;
 		float m_fieldOfView;
 		float m_aspectRatio;
+		glm::vec3 m_translate{ 0, 0, 0 };
+		float m_zoom = 1;
 
 		float m_translateSpeed;
 		float m_zoomFraction;
