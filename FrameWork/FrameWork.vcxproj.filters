@@ -145,6 +145,9 @@
     <ClCompile Include="MyFiles\Physics\Collision\MyCollisionResolver.cpp">
       <Filter>MyFiles\Physics\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="WindEffect.cpp">
+      <Filter>MyFiles\Display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MMatrix.H">
@@ -267,12 +270,17 @@
     <ClInclude Include="Floor.h">
       <Filter>MyFiles</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="MyFiles\Physics\Objects\MyLiquid.h" />
     <ClInclude Include="MyFiles\Physics\Collision\MyColliders.h">
       <Filter>MyFiles\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="MyFiles\Physics\Collision\MyCollisionResolver.h">
       <Filter>MyFiles\Physics\Collision</Filter>
+=======
+    <ClInclude Include="WindEffect.h">
+      <Filter>MyFiles\Display</Filter>
+>>>>>>> Stashed changes
     </ClInclude>
   </ItemGroup>
 </Project>

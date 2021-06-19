@@ -1,4 +1,5 @@
 #include "MyGlWindow.h"
+#include "WindEffect.h"
 
 #include <iostream>
 #include "drawUtils.h"
@@ -114,6 +115,8 @@ void MyGlWindow::setupObjects() {
 	floor->setBottom(-100);
 	//	m_objects.emplace_back(floor, false);
 	m_objects.emplace_back(water, false);
+	m_renderable.push_back(floor);
+	m_renderable.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
 }
 
 
@@ -278,6 +281,9 @@ void MyGlWindow::update()
 	{
 		item->update(duration);
 	}
+	auto p = this->m_objects[0]->particle->getPosition();
+	auto p2 = this->floor->particle->getPosition();
+	auto v = this->m_objects[0]->particle->getVelocity();
 
 	for (auto item : m_objects)
 	{

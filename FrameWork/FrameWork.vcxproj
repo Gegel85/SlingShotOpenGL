@@ -48,6 +48,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="timing.cpp" />
     <ClCompile Include="Viewer.cpp" />
+    <ClCompile Include="WindEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Cyclone\body.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="timing.h" />
     <ClInclude Include="Vec3f.h" />
     <ClInclude Include="Viewer.h" />
+    <ClInclude Include="WindEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8126ADF4-A8EA-4166-A68A-793C1785F3E4}</ProjectGuid>

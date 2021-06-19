@@ -83,13 +83,11 @@ void Floor::draw(bool shadow)
 	glColor3f(0.20, 0, 0);
 	glVertex3f(this->_chunkSize * this->_space, this->_min, this->_depth);
 	glVertex3f(0, this->_min, this->_depth);
-	glEnd();
 
 	glColor3f(0, (pt1 * this->_space) / this->_max, 0);
 	for (unsigned i = 0, j = (this->_left + 1) % this->_points.size(); i < this->_chunkSize - 1; i++, j = (j + 1) % this->_points.size()) {
 		auto pt2 = this->_points[j];
 
-		glBegin(GL_QUADS);
 		if (!shadow) {
 			auto f = (pt1 - this->_min) / (this->_max - this->_min);
 
@@ -118,9 +116,9 @@ void Floor::draw(bool shadow)
 		glVertex3f(i * this->_space - this->_leftPad, this->_min, this->_depth);
 		glVertex3f((i + 1) * this->_space - this->_leftPad, this->_min, this->_depth);
 
-		glEnd();
 		pt1 = pt2;
 	}
+	glEnd();
 	glPopMatrix(); //restore the coord system
 }
 
