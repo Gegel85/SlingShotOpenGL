@@ -39,15 +39,20 @@ void Floor::regenerate(size_t sidesBeforeRepeat, float spaceBetweenSides, float 
 
 std::vector<cyclone::Vector3> Floor::getAnglePoints(float x1, float x2)
 {
-	auto start = static_cast<int>(x1 / this->_space) % this->_points.size();
-	auto end = x2 + this->_space - std::fmod(x2, this->_space);
+	int start = static_cast<int>(this->_points.size() + std::fmod(std::floor(x1 / this->_space), this->_points.size())) % this->_points.size();
+	float end = std::ceil(x2 / this->_space) * this->_space;
 	std::vector<cyclone::Vector3> list;
-	float x = x1 - std::fmod(x1, this->_space);
+	float x = std::floor(x1 / this->_space) * this->_space;
+	float ogX = x;
+	float limit = x2 + this->_space;
 
-	list.reserve((x - end) * this->_space);
-	for (; x < x2; x += this->_space, start = (start + 1) % this->_points.size())
+	list.reserve((std::ceil(end) - x + 1) / this->_space);
+	while (x < limit) {
 		list.emplace_back(x, this->_points[start], 0);
-	assert((x - end) * this->_space == list.size());
+		x += this->_space;
+		start = (start + 1) % this->_points.size();
+	}
+	assert((std::ceil(end) - ogX) / this->_space + 1 == list.size());
 	return list;
 }
 

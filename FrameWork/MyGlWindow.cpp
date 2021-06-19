@@ -16,7 +16,7 @@ static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 #define MAX_FLOOR_Y 60
 #define START_VALUE 35
 #define MAX_DELTA 8
-#define CHUNK_SIZE 50
+#define CHUNK_SIZE 500 / SPACE
 #define LEFT_POSITION -150
 
 void drawStrokeText(char* string, int x, int y, int z)
@@ -115,8 +115,8 @@ void MyGlWindow::setupObjects() {
 	floor->setBottom(-100);
 	//	m_objects.emplace_back(floor, false);
 	m_objects.emplace_back(water, false);
-	m_renderable.push_back(floor);
-	m_renderable.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
+	m_renderables.push_back(floor);
+	m_renderables.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
 }
 
 
@@ -264,14 +264,14 @@ void MyGlWindow::update()
 	if (scoreCallback)
 		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
 
-	/*
+	
 	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
 	for each (auto dot in map)
 	{
-	std::cout << dot.x << " | ";
+		std::cout << dot.x << " | ";
 	}
 	std::cout << std::endl;
-	*/
+	
 
 //TODO set map contact
 
@@ -281,9 +281,9 @@ void MyGlWindow::update()
 	{
 		item->update(duration);
 	}
-	auto p = this->m_objects[0]->particle->getPosition();
+	auto p = this->m_objects[0].first->particle->getPosition();
 	auto p2 = this->floor->particle->getPosition();
-	auto v = this->m_objects[0]->particle->getVelocity();
+	auto v = this->m_objects[0].first->particle->getVelocity();
 
 	for (auto item : m_objects)
 	{
