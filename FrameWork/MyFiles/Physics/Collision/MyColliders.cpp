@@ -1,5 +1,6 @@
 #include "MyColliders.h"
 #include <iostream>
+#include<utility>
 
 const float deg2Rad = 3.141592f / 180;
 const float rad2Deg = 180 / 3.141592f;
@@ -37,6 +38,7 @@ void MyLinesContact::init(cyclone::Particle* p, double size)
 void cyclone::MyLinesContact::setDots(std::vector<cyclone::Vector3> dots)
 {
 	map = dots;
+	std::cout << std::endl;
 	while (map.size() < 2)
 		map.push_back(cyclone::Vector3(0, 0, 0));
 }
@@ -44,11 +46,11 @@ void cyclone::MyLinesContact::setDots(std::vector<cyclone::Vector3> dots)
 unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned limit) const
 {
 	unsigned count = 0;
+	bool is_colliding = false;
 
 	for (int i = 0; i < particles.size(); i++)
 	{
-		cyclone::Particle* p = particles[i].first;
-		auto pos = p->getPosition();
+		auto pos = particles[i].first->getPosition();
 		for (unsigned int j = 0; j < map.size() - 1; j++)
 		{
 			cyclone::Vector3 v1(map[j + 1].x - map[j].x, map[j + 1].y - map[j].y, 0);
@@ -59,15 +61,28 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 
 			if (v2.magnitude() - size[i] < v1.magnitude() && v3.magnitude() - size[i] < v1.magnitude() && n.magnitude() < size[i])
 			{
-				contact->contactNormal = n.unit();
-				contact->particle[0] = p;
-				contact->particle[1] = NULL;
-				contact->penetration = size[i] - n.magnitude();
-				contact->restitution = 1.0f;
+				is_colliding = true;
+				if (particles[i].second == false) {
+					if (onEnter != NULL) onEnter(particles[i].first);
+					particles[i].second = true;
+				}
+				else if (onStay != NULL) onStay(particles[i].first);
+				if (!is_trigger) {
+					contact->contactNormal = n.unit();
+					contact->particle[0] = particles[i].first;
+					contact->particle[1] = NULL;
+					contact->penetration = size[i] - n.magnitude();
+					contact->restitution = 1.0f;
 
-				contact++;
-				count++;
+					contact++;
+					count++;
+				}
 			}
+			if (particles[i].second == true && !is_colliding) {
+				if (onExit != NULL)  onExit(particles[i].first);
+				particles[i].second = false;
+			}
+			is_colliding = false;
 			if (count >= limit) return count;
 		}
 	}
@@ -99,6 +114,7 @@ void cyclone::MyCircleContact::init(cyclone::Particle* p, double size)
 unsigned cyclone::MyCircleContact::addContact(cyclone::ParticleContact* contact, unsigned limit) const
 {
 	unsigned count = 0;
+	bool is_colliding = false;
 
 	for (int i = 0; i < particles.size(); i++)
 	{
@@ -107,17 +123,29 @@ unsigned cyclone::MyCircleContact::addContact(cyclone::ParticleContact* contact,
 			cyclone::Vector3 d = particles[i].first->getPosition() - particles[j].first->getPosition();
 			if (d.magnitude() < size[i] + size[j])
 			{
-				contact->contactNormal = d.unit();
-				contact->particle[0] = particles[i].first;
-				contact->particle[1] = particles[j].first;
-				contact->penetration = size[i] + size[j] - d.magnitude();
-				contact->restitution = 1.0f;
+				if (particles[i].second == false) {
+					if (onEnter != NULL)  onEnter(particles[i].first);
+					particles[i].second = true;
+				}
+				else if (onStay != NULL)  onStay(particles[i].first);
+				if (!is_trigger) {
+					contact->contactNormal = d.unit();
+					contact->particle[0] = particles[i].first;
+					contact->particle[1] = particles[j].first;
+					contact->penetration = size[i] + size[j] - d.magnitude();
+					contact->restitution = 1.0f;
 
-				contact++;
-				count++;
+					contact++;
+					count++;
+				}
 			}
 
 		}
+		if (particles[i].second == true && !is_colliding) {
+			if (onExit != NULL)  onExit(particles[i].first);
+			particles[i].second = false;
+		}
+		is_colliding = false;
 		if (count >= limit) return count;
 	}
 	return count;
@@ -144,5 +172,41 @@ void cyclone::MyRectContact::init(cyclone::Particle * p, double size)
 
 unsigned cyclone::MyRectContact::addContact(cyclone::ParticleContact * contact, unsigned limit) const
 {
-	return 0;
+	unsigned count = 0;
+	bool is_colliding = false;
+
+	for (int i = 0; i < particles.size(); i++)
+	{
+		for (int j = 0; j < particles.size(); j++)
+		{
+			cyclone::Vector3 n = cyclone::Vector3();
+
+			if (true)
+			{
+				if (particles[i].second == false) {
+					if (onEnter != NULL)  onEnter(particles[i].first);
+					particles[i].second = true;
+				}
+				else if (onStay != NULL) onStay(particles[i].first);
+				if (!is_trigger) {
+					contact->contactNormal = n.unit();
+					contact->particle[0] = particles[i].first;
+					contact->particle[1] = NULL;
+					contact->penetration = size[i] + size[j];
+					contact->restitution = 1.0f;
+
+					contact++;
+					count++;
+				}
+			}
+
+		}
+		if (particles[i].second == true && !is_colliding) {
+			if (onExit != NULL)  onExit(particles[i].first);
+			particles[i].second = false;
+		}
+		is_colliding = false;
+		if (count >= limit) return count;
+	}
+	return count;
 }

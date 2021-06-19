@@ -15,11 +15,12 @@ namespace cyclone {
 		virtual unsigned addContact(cyclone::ParticleContact* contact, unsigned limit) const = 0;
 		virtual unsigned int getMaxContactCount();
 
-		void(*onEnter)(cyclone::Particle* contact);
-		void(*onExit)(cyclone::Particle* contact);
+		void(*onEnter)(cyclone::Particle* contact) = NULL;
+		void(*onStay)(cyclone::Particle* contact) = NULL;
+		void(*onExit)(cyclone::Particle* contact) = NULL;
 
 	protected:
-		std::vector<std::pair<cyclone::Particle*, bool>> particles;
+		mutable std::vector<std::pair<cyclone::Particle*, bool>> particles;
 		std::vector<double> size;
 	};
 

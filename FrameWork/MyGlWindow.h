@@ -68,6 +68,7 @@ private:
 	std::vector<std::pair<MyObject*, bool>> m_objects;
 	MyLiquid* water;
 	Floor* floor;
+	cyclone::MyLinesContact* floor_contact;
 	MySphere* player;
 	int m_selected = -1;
 	void (*scoreCallback)(const float&);

@@ -14,11 +14,13 @@ void MyCollisionResolver::update(cyclone::real duration)
 	{
 		limit += contact->getMaxContactCount();
 	}
+
 	if (m_contact) free(m_contact);
 	m_contact = new cyclone::ParticleContact[limit + 1];
 	max_contact = limit;
 	cyclone::ParticleContact* nextContact = m_contact;
-	for (std::vector<cyclone::AMyContact*>::iterator g = m_contacts.begin();
+	unsigned ct = 0;
+	for (auto g = m_contacts.begin();
 		g != m_contacts.end();
 		g++)
 	{

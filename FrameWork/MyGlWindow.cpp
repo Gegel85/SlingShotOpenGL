@@ -59,7 +59,7 @@ void MyGlWindow::resetGame()
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
-	player->resetTranslation(cyclone::Vector3(0, 50, 0));
+	player->resetTranslation(cyclone::Vector3(0, 100, 0));
 }
 
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
@@ -90,7 +90,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 void MyGlWindow::setupForces() {
 	m_world = new MyWorldSpec(cyclone::Vector3::GRAVITY);
-	water = new MyLiquid(MAX_DELTA, 1, m_world);
+	water = new MyLiquid(MAX_DELTA * 2, 1, m_world);
 	water->setPosition(cyclone::Vector3(0, MIN_FLOOR_Y, 0));
 	water->width = 30;
 	water->length = 200;
@@ -99,21 +99,19 @@ void MyGlWindow::setupForces() {
 void MyGlWindow::setupObjects() {
 	player = new MySphere(2, 2, m_world);
 	player->particle->setDamping(0.7);
-	m_objects.emplace_back(player, true);
 	water->m_force->setTarget(player);
 
-	cyclone::MyLinesContact* map = new cyclone::MyLinesContact({ cyclone::Vector3(-10, 40, 0), cyclone::Vector3(3, 30, 0), cyclone::Vector3(10, 40, 0) });
-
-	map->init(player->particle, player->radius);
-
-	m_c_resolver->m_contacts.push_back(map);
+	floor_contact = new cyclone::MyLinesContact({});
+	floor_contact->init(player->particle, player->radius);
+	m_c_resolver->m_contacts.push_back(floor_contact);
 
 	floor = new Floor(m_world, DEPTH, NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setChunkSize(CHUNK_SIZE);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, -15, 0));
 	floor->setLeftX(LEFT_POSITION);
 	floor->setBottom(-100);
-	//	m_objects.emplace_back(floor, false);
+
+	m_objects.emplace_back(player, true);
 	m_objects.emplace_back(water, false);
 	m_renderables.push_back(floor);
 	m_renderables.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
@@ -177,6 +175,7 @@ void MyGlWindow::draw()
 	// clear the window, be sure to clear the Z-Buffer too
 	glClearColor(0.2, 0.2, 0.2, 1);		// background should be blue
 
+	focus_cam(player->particle);
 
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -221,7 +220,6 @@ void MyGlWindow::draw()
 	/////////////////////////
 //	putText("7001539", 0, 0, 1, 1, 0); // ça nique le doPick()
 
-
 	//draw shadow
 	setupShadows();
 	for (auto item : m_renderables)
@@ -265,32 +263,28 @@ void MyGlWindow::update()
 		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
 
 	
-	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
-	for each (auto dot in map)
-	{
-		std::cout << dot.x << " | ";
-	}
-	std::cout << std::endl;
+	auto p = this->m_objects[0].first->particle->getPosition();
+	auto p2 = this->floor->particle->getPosition();
+	auto v = this->m_objects[0].first->particle->getVelocity();
 	
-
-//TODO set map contact
-
-	m_c_resolver->update(duration);
+	floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
+	floor->setLeftX(p.x + LEFT_POSITION);
+	water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
 
 	for (auto item : m_renderables)
 	{
 		item->update(duration);
 	}
-	auto p = this->m_objects[0].first->particle->getPosition();
-	auto p2 = this->floor->particle->getPosition();
-	auto v = this->m_objects[0].first->particle->getVelocity();
 
 	for (auto item : m_objects)
 	{
 		item.first->update(duration);
 	}
 
-	focus_cam(player->particle);
+	// Contacts
+	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
+	floor_contact->setDots(map);
+	m_c_resolver->update(duration);
 }
 
 void MyGlWindow::focus_cam(cyclone::Particle* target) {
@@ -299,12 +293,10 @@ void MyGlWindow::focus_cam(cyclone::Particle* target) {
 	auto v = target->getVelocity();
 	auto zoom = 0.75 + std::log10(std::abs(v.x) + 0.5) / 2;
 
-	water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
-
-	this->m_viewer->setZoom(zoom);
-	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
-	this->floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
-	this->floor->setLeftX(p.x + LEFT_POSITION);
+//	this->m_viewer->setZoom(zoom);
+//	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
+	m_viewer->centerAt(glm::vec3(p.x, p.y, p.z));
+	m_viewer->lookFrom(glm::vec3(p.x, p.y, p.z) + glm::vec3(0, 75, 75));
 }
 
 void MyGlWindow::doPick()
