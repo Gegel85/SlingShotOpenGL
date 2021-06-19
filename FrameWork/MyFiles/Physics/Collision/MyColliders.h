@@ -13,7 +13,7 @@ namespace cyclone {
 
 		virtual void init(cyclone::Particle* p, double size) = 0;
 		virtual unsigned addContact(cyclone::ParticleContact* contact, unsigned limit) const = 0;
-		unsigned int getMaxContactCount();
+		virtual unsigned int getMaxContactCount();
 
 		void(*onEnter)(cyclone::Particle* contact);
 		void(*onExit)(cyclone::Particle* contact);
@@ -23,17 +23,19 @@ namespace cyclone {
 		std::vector<double> size;
 	};
 
-	class MyMapContact : public AMyContact
+	class MyLinesContact : public AMyContact
 	{
 		std::vector<cyclone::Vector3> map;
 	public:
-		MyMapContact(std::vector<cyclone::Vector3> dots);
-		~MyMapContact();
+		MyLinesContact(std::vector<cyclone::Vector3> dots);
+		~MyLinesContact();
+		
+		void setDots(std::vector<cyclone::Vector3> dots);
 
 		// Hérité via AMyContact
 		void init(cyclone::Particle* p, double size) override;
-		void setMap(std::vector<cyclone::Vector3> dots);
 		virtual unsigned addContact(cyclone::ParticleContact* contact, unsigned limit) const override;
+		unsigned int getMaxContactCount() override;
 
 	};
 

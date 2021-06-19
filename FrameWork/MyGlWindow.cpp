@@ -58,7 +58,7 @@ void MyGlWindow::resetGame()
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
-	player->resetTranslation(cyclone::Vector3(0, 40, 0));
+	player->resetTranslation(cyclone::Vector3(0, 50, 0));
 }
 
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
@@ -84,6 +84,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 	setupForces();
 	setupObjects();
+	resetGame();
 }
 
 void MyGlWindow::setupForces() {
@@ -100,18 +101,18 @@ void MyGlWindow::setupObjects() {
 	m_objects.emplace_back(player, true);
 	water->m_force->setTarget(player);
 
-//	cyclone::MyMapContact* map = new cyclone::MyMapContact({ cyclone::Vector3(-2, 30, 0), cyclone::Vector3(2, 30, 0) });
+	cyclone::MyLinesContact* map = new cyclone::MyLinesContact({ cyclone::Vector3(-10, 40, 0), cyclone::Vector3(3, 30, 0), cyclone::Vector3(10, 40, 0) });
 
-	//	map->init(player->particle, player->radius);
+	map->init(player->particle, player->radius);
 
-//	m_c_resolver->m_contacts.push_back(map);
+	m_c_resolver->m_contacts.push_back(map);
 
 	floor = new Floor(m_world, DEPTH, NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setChunkSize(CHUNK_SIZE);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, -15, 0));
 	floor->setLeftX(LEFT_POSITION);
 	floor->setBottom(-100);
-	m_objects.emplace_back(floor, false);
+	//	m_objects.emplace_back(floor, false);
 	m_objects.emplace_back(water, false);
 }
 
@@ -260,6 +261,17 @@ void MyGlWindow::update()
 	if (scoreCallback)
 		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
 
+	/*
+	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
+	for each (auto dot in map)
+	{
+	std::cout << dot.x << " | ";
+	}
+	std::cout << std::endl;
+	*/
+
+//TODO set map contact
+
 	m_c_resolver->update(duration);
 
 	for (auto item : m_renderables)
@@ -273,13 +285,6 @@ void MyGlWindow::update()
 	}
 
 	focus_cam(player->particle);
-
-	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
-	for each (auto dot in map)
-	{
-	std::cout << dot.x << " | ";
-	}
-	std::cout << std::endl;
 }
 
 void MyGlWindow::focus_cam(cyclone::Particle* target) {

@@ -1,6 +1,9 @@
 #include "MyColliders.h"
 #include <iostream>
 
+const float deg2Rad = 3.141592f / 180;
+const float rad2Deg = 180 / 3.141592f;
+
 using namespace cyclone;
 
 unsigned int AMyContact::getMaxContactCount()
@@ -10,20 +13,20 @@ unsigned int AMyContact::getMaxContactCount()
 
 
 /// Plane
-MyMapContact::MyMapContact(std::vector<cyclone::Vector3> dots)
+MyLinesContact::MyLinesContact(std::vector<cyclone::Vector3> dots)
 {
 	map = dots;
-	if (map.size() < 2)
-		map.push_back(cyclone::Vector3( 0, 0, 0 ));
+	while (map.size() < 2)
+		map.push_back(cyclone::Vector3(0, 0, 0));
 }
 
 
-MyMapContact::~MyMapContact()
+MyLinesContact::~MyLinesContact()
 {
 }
 
 
-void MyMapContact::init(cyclone::Particle* p, double size)
+void MyLinesContact::init(cyclone::Particle* p, double size)
 {
 	if (p) {
 		particles.emplace_back(p, false);
@@ -31,14 +34,14 @@ void MyMapContact::init(cyclone::Particle* p, double size)
 	}
 }
 
-void cyclone::MyMapContact::setMap(std::vector<cyclone::Vector3> dots)
+void cyclone::MyLinesContact::setDots(std::vector<cyclone::Vector3> dots)
 {
 	map = dots;
-	if (map.size() < 2)
+	while (map.size() < 2)
 		map.push_back(cyclone::Vector3(0, 0, 0));
 }
 
-unsigned MyMapContact::addContact(cyclone::ParticleContact* contact, unsigned limit) const
+unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned limit) const
 {
 	unsigned count = 0;
 
@@ -46,17 +49,16 @@ unsigned MyMapContact::addContact(cyclone::ParticleContact* contact, unsigned li
 	{
 		cyclone::Particle* p = particles[i].first;
 		auto pos = p->getPosition();
-		for (unsigned int i = 0; i < map.size() - 1; i++)
+		for (unsigned int j = 0; j < map.size() - 1; j++)
 		{
-			cyclone::Vector3 v1(map[i+1].x - map[i].x, map[i+1].y - map[i].y, 0);
-			cyclone::Vector3 v2(pos.x - map[i].x, pos.y - map[i].y, 0);
-			cyclone::Vector3 v3(pos.x - map[i+1].x, pos.y - map[i+1].y, 0);
-			cyclone::Vector3 closest = map[i] + v1 * ((v1.x * v2.x + v1.y * v2.y) / v2.magnitude());
+			cyclone::Vector3 v1(map[j + 1].x - map[j].x, map[j + 1].y - map[j].y, 0);
+			cyclone::Vector3 v2(pos.x - map[j].x, pos.y - map[j].y, 0);
+			cyclone::Vector3 v3(pos.x - map[j + 1].x, pos.y - map[j + 1].y, 0);
+			cyclone::Vector3 closest = map[j] + v1.unit() * v2.magnitude() * ((v1.x * v2.x + v1.y * v2.y) / (v1.magnitude() * v2.magnitude()));
 			cyclone::Vector3 n = pos - closest;
 
 			if (v2.magnitude() - size[i] < v1.magnitude() && v3.magnitude() - size[i] < v1.magnitude() && n.magnitude() < size[i])
 			{
-				std::cout << "contact" << std::endl;
 				contact->contactNormal = n.unit();
 				contact->particle[0] = p;
 				contact->particle[1] = NULL;
@@ -70,6 +72,11 @@ unsigned MyMapContact::addContact(cyclone::ParticleContact* contact, unsigned li
 		}
 	}
 	return count;
+}
+
+unsigned int cyclone::MyLinesContact::getMaxContactCount()
+{
+	return map.size() + particles.size();
 }
 
 cyclone::MyCircleContact::MyCircleContact()
