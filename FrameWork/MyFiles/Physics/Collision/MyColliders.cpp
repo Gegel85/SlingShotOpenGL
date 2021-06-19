@@ -38,7 +38,6 @@ void MyLinesContact::init(cyclone::Particle* p, double size)
 void cyclone::MyLinesContact::setDots(std::vector<cyclone::Vector3> dots)
 {
 	map = dots;
-	std::cout << std::endl;
 	while (map.size() < 2)
 		map.push_back(cyclone::Vector3(0, 0, 0));
 }

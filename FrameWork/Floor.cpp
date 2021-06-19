@@ -139,7 +139,7 @@ void Floor::setLeft(size_t left)
 
 void Floor::setLeftX(float x)
 {
-	if (x < 0)
+	if (x < 0 && x != (int)x)
 		x -= this->_space;
 	this->setLeft(static_cast<size_t>(
 		this->_points.size() +
