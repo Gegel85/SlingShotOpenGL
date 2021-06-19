@@ -25,14 +25,14 @@
     <Filter Include="MyFiles\Physics\Objects">
       <UniqueIdentifier>{d7b78192-61aa-4b83-8968-018eb5ce818f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MyFiles\Physics\Colliders">
-      <UniqueIdentifier>{1b5ac79e-eae4-4adf-b624-b6f37f6fe338}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MyFiles\Physics\Forces">
       <UniqueIdentifier>{6537ecaa-17dc-4e2c-ba80-b362b6d1c36f}</UniqueIdentifier>
     </Filter>
     <Filter Include="MyFiles\Physics\Transform">
       <UniqueIdentifier>{0f0ace80-afd4-4095-b915-426706e96870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyFiles\Physics\Collision">
+      <UniqueIdentifier>{1b5ac79e-eae4-4adf-b624-b6f37f6fe338}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +139,12 @@
       <Filter>MyFiles</Filter>
     </ClCompile>
     <ClCompile Include="MyFiles\Physics\Objects\MyLiquid.cpp" />
+    <ClCompile Include="MyFiles\Physics\Collision\MyColliders.cpp">
+      <Filter>MyFiles\Physics\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFiles\Physics\Collision\MyCollisionResolver.cpp">
+      <Filter>MyFiles\Physics\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MMatrix.H">
@@ -262,5 +268,11 @@
       <Filter>MyFiles</Filter>
     </ClInclude>
     <ClInclude Include="MyFiles\Physics\Objects\MyLiquid.h" />
+    <ClInclude Include="MyFiles\Physics\Collision\MyColliders.h">
+      <Filter>MyFiles\Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFiles\Physics\Collision\MyCollisionResolver.h">
+      <Filter>MyFiles\Physics\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -30,6 +30,8 @@
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MMatrix.cpp" />
+    <ClCompile Include="MyFiles\Physics\Collision\MyColliders.cpp" />
+    <ClCompile Include="MyFiles\Physics\Collision\MyCollisionResolver.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MyAnchoredSpring.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MyBuoyancy.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MyParticleMagnet.cpp" />
@@ -70,6 +72,8 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="MMatrix.H" />
     <ClInclude Include="MyFiles\Display\IMyRender.h" />
+    <ClInclude Include="MyFiles\Physics\Collision\MyColliders.h" />
+    <ClInclude Include="MyFiles\Physics\Collision\MyCollisionResolver.h" />
     <ClInclude Include="MyFiles\Physics\Forces\AMyAnchoredForce.h" />
     <ClInclude Include="MyFiles\Physics\Forces\AMyConnection.h" />
     <ClInclude Include="MyFiles\Physics\Forces\MyAnchoredSpring.h" />

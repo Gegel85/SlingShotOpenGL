@@ -23,6 +23,8 @@
 #include "MyFiles/Physics/Forces/MyBuoyancy.h"
 #include "MyFiles/Physics/Objects/MySphere.h"
 #include "MyFiles/Physics/Objects/MyLiquid.h"
+#include "MyFiles/Physics/Collision/MyCollisionResolver.h"
+#include "MyFiles/Physics/Collision/MyColliders.h"
 #include "Floor.h"
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -42,6 +44,7 @@ public:
 	int run;
 	void resetGame();
 	void update();
+	void focus_cam(cyclone::Particle * target);
 	void drawStuff();
 	void doPick();
 	void setScoreCallback(void(*callback)(const float&)) {
@@ -60,11 +63,12 @@ private:
 	Viewer* m_viewer;
 	char* m_mvt_type;
 	MyWorldSpec* m_world;
+	MyCollisionResolver* m_c_resolver;
 	std::vector<IMyRender*> m_renderables;
 	std::vector<std::pair<MyObject*, bool>> m_objects;
 	MyLiquid* water;
 	Floor* floor;
-	MyObject* player;
+	MySphere* player;
 	int m_selected = -1;
 	void (*scoreCallback)(const float&);
 
