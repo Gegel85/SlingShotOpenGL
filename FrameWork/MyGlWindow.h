@@ -39,6 +39,7 @@ public:
 	static const char* PISTOL;
 
 	MyGlWindow(int x, int y, int w, int h);
+	~MyGlWindow();
 
 	std::vector<Vec3f*> history;
 
@@ -49,7 +50,7 @@ public:
 	void focus_cam(cyclone::Particle * target);
 	void drawStuff();
 	void doPick();
-	void setScoreCallback(void(*callback)(const float&)) {
+	void setScoreCallback(void(*callback)(int sessionScore, int maxScore)) {
 		scoreCallback = callback;
 	};
 
@@ -60,7 +61,8 @@ private:
 	int handle(int);				// standard FlTk
 
 	int frames = 0;
-
+	int _highScore = 0;
+	int _score = 0;
 	float fieldOfView;
 	Viewer* m_viewer;
 	char* m_mvt_type;
@@ -76,7 +78,7 @@ private:
 	int game_step = 0;
 	int m_selected = -1;
 	std::function<void(cyclone::Particle*)> launch_ball;
-	void (*scoreCallback)(const float&);
+	void (*scoreCallback)(int sessionScore, int maxScore);
 
 	void setProjection(int clearProjection = 1);
 	void getMouseNDC(float& x, float& y);

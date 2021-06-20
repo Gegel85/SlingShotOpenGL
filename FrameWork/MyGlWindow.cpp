@@ -1,6 +1,7 @@
 #include "MyGlWindow.h"
 #include "WindEffect.h"
 
+#include <fstream>
 #include <iostream>
 #include "drawUtils.h"
 #include "timing.h"
@@ -9,6 +10,8 @@ static double DEFAULT_VIEW_POINT[3] = { 53, 77.951, 74.6012 };
 static double DEFAULT_VIEW_CENTER[3] = { 53, -20.46, -17.7185 };
 static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 
+#define min(a, b) ((a < b) ? a : b)
+#define max(a, b) ((a > b) ? a : b)
 #define DEPTH 20
 #define NB_POINTS 1000
 #define SPACE 10
@@ -58,6 +61,7 @@ void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 void MyGlWindow::resetGame()
 {
 	game_step = 0;
+	this->_score = 0;
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
@@ -66,11 +70,22 @@ void MyGlWindow::resetGame()
 	m_objects[0].second = true;
 }
 
+MyGlWindow::~MyGlWindow()
+{
+	std::ofstream stream{ "highscore.dat", std::ifstream::binary };
+
+	if (!stream.fail())
+		stream.write(reinterpret_cast<char *>(&this->_highScore), sizeof(this->_highScore));
+}
+
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	Fl_Gl_Window(x, y, w, h)
 	//==========================================================================
 {
+	std::ifstream stream{ "highscore.dat", std::ifstream::binary };
 
+	if (stream.fail())
+		stream.read(reinterpret_cast<char *>(&this->_highScore), sizeof(this->_highScore));
 	mode(FL_RGB | FL_ALPHA | FL_DOUBLE | FL_STENCIL);
 
 	fieldOfView = 45;
@@ -275,14 +290,19 @@ void MyGlWindow::draw()
 
 void MyGlWindow::update()
 {
-	TimingData::get().update();
-
 	if (!run) return;
 
-	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
+	float duration = 1. / 30;
+
+	if (!this->slingshot->getForce()) {
+		int s = std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f;
+
+		this->_score = max(this->_score, s);
+	}
+	this->_highScore = max(this->_score, this->_highScore);
 
 	if (scoreCallback)
-		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
+		scoreCallback(this->_score, this->_highScore);
 
 	auto p = this->m_objects[0].first->particle->getPosition();
 	auto p2 = this->floor->particle->getPosition();

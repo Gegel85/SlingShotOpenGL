@@ -16,6 +16,7 @@
 #include "MyGlWindow.h"
 
 #define min(a, b) ((a < b) ? a : b)
+#define max(a, b) ((a > b) ? a : b)
 
 Fl_Group* widgets;
 Fl_Text_Buffer* score_buff;
@@ -23,7 +24,6 @@ Fl_Text_Buffer* high_score_buff;
 
 long lastRedraw;
 int frameRate = 60;
-float highScore = 0;
 
 void changeFrameCB(Fl_Widget* w, void* data)
 {
@@ -50,14 +50,15 @@ void bt_cb_run(Fl_Widget* o, void* data)
 {
 	Fl_Button* b = (Fl_Button*)o; //캐스팅이 반드시 필요
 	MyGlWindow* win = (MyGlWindow*)data;
+
+	score_buff->text("0");
 	win->resetGame();
 	win->damage(1);
 }
 
-void updateScore(const float &score) {
-	highScore = (highScore > score) ? highScore : score;
+void updateScore(int score, int maxScore) {
 	score_buff->text(std::to_string(score).c_str());
-	high_score_buff->text(std::to_string(highScore).c_str());
+	high_score_buff->text(std::to_string(maxScore).c_str());
 }
 
 int main()
@@ -84,18 +85,20 @@ int main()
 	Fl_Button* reset = new Fl_Button(10, height - 30, 100, 20, "Reset");
 	reset->callback(bt_cb_run, gl);
 
-	Fl_Text_Display* score = new Fl_Text_Display(width / 2 - 100, height - 30, 190, 20);
+	Fl_Text_Display* score = new Fl_Text_Display(width / 2 - 100, height - 30, 90, 20);
 	score->scrollbar_width(0);
 	score->buffer(score_buff);
 	score->align(FL_ALIGN_LEFT);
 	score->label("Score");
 
-	Fl_Text_Display* high_score = new Fl_Text_Display(width - 200, height - 30, 190, 20);
+	Fl_Text_Display* high_score = new Fl_Text_Display(width - 200, height - 30, 90, 20);
 	high_score->scrollbar_width(0);
 	high_score->buffer(high_score_buff);
 	high_score->align(FL_ALIGN_LEFT);
 	high_score->label("High Score");
 
+	score_buff->text("0");
+	high_score_buff->text("0");
 	wind->end();
 
 	wind->show();	// this actually opens the window
