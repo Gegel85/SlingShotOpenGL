@@ -66,14 +66,17 @@ void MyGlWindow::resetGame()
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
+	floor_contact->is_trigger = true;
+
 	player->resetTranslation(cyclone::Vector3(0, START_VALUE + 19 + player->radius, 0));
+	player->forces->remove(player->particle, m_world->gravity);
+	player->forces->remove(player->particle, wind_force);
+	m_objects[0].second = true;
+
 	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
-	wind_force->direction = myRand(-pi, pi);
+	wind_force->direction = myRand(-pi / 4.0, pi / 2.0);
 	wind_force->speed = myRand(5, WIND_V_MAX);
 	wind->setAngle(wind_force->direction);
-	player->forces->remove(player->particle, wind_force);
-	floor_contact->is_trigger = true;
-	m_objects[0].second = true;
 }
 
 MyGlWindow::~MyGlWindow()
@@ -114,6 +117,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 			slingshot->setForce(NULL);
 			floor_contact->is_trigger = false;
 			player->forces->add(player->particle, wind_force);
+			player->forces->add(player->particle, m_world->gravity);
 		}
 	};
 
@@ -149,7 +153,7 @@ void MyGlWindow::setupObjects() {
 	slingshot = new PoleConnection(player);
 	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
 
-	auto launch = new cyclone::MyCircleContact(cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), 3.0);
+	auto launch = new cyclone::MyCircleContact(cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), 4.0);
 	launch->is_trigger = true;
 	launch->init(player->particle, player->radius);
 	launch->onEnter = &launch_ball;
@@ -476,6 +480,8 @@ int MyGlWindow::handle(int e)
 			m_objects[m_selected].first->m_static = false;
 			m_objects[m_selected].second = false;
 			game_step = 2;
+			player->particle->setVelocity(cyclone::Vector3());
+			player->particle->setAcceleration(cyclone::Vector3());
 		}
 		m_pressedMouseButton = -1;
 		damage(1);

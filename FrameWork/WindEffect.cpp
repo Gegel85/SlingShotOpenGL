@@ -2,7 +2,7 @@
 #include "Floor.h"
 
 #define NB_PARTICLES 50
-#define DELTA_SPEED 2
+#define DELTA_SPEED 0.05
 #define MIN_LENGTH 10
 #define MAX_LENGTH 50
 
@@ -80,7 +80,7 @@ void WindEffect::_generate()
 		particle.pt1.y = myRand(this->_topLeftBorder.y, this->_bottomRightBorder.y);
 		particle.pt2.x = particle.pt1.x + std::cos(this->_angle) * s;
 		particle.pt2.y = particle.pt1.y + std::sin(this->_angle) * s;
-		s = myRand(max(0.1, _speed - DELTA_SPEED), _speed + DELTA_SPEED);
+		s = myRand(max(0.1, _speed - _speed * DELTA_SPEED), _speed + _speed * DELTA_SPEED);
 		particle.speed.x = std::cos(this->_angle) * s;
 		particle.speed.y = std::sin(this->_angle) * s;
 		this->_elems.push_back(particle);

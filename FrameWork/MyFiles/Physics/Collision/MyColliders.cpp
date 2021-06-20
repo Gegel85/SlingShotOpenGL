@@ -68,11 +68,13 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 				}
 				else if (onStay != NULL) (*onStay)(particles[i].first);
 
+				n.y = abs(n.y);
 				contacts.first += n.unit() * (size[i] - n.magnitude());
 				contacts.second += size[i] - n.magnitude();
 			}
 		}
 		if (is_colliding && !is_trigger) {
+			particles[i].first->setPosition(particles[i].first->getPosition() + contacts.first.unit() * contacts.second);
 			contact->contactNormal = contacts.first.unit();
 			contact->particle[0] = particles[i].first;
 			contact->particle[1] = NULL;
