@@ -88,7 +88,6 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	m_c_resolver = new MyCollisionResolver();
 
 	launch_ball = [this](cyclone::Particle* contact) {
-		std::cout << "contact" << std::endl;
 		if (game_step == 2) {
 			game_step = 3;
 			slingshot->setForce(NULL);
