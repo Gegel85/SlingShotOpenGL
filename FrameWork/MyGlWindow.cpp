@@ -217,7 +217,7 @@ void MyGlWindow::drawScoreLine(float r, float g, float b, float score)
 	glBegin(GL_LINES);
 	glColor3f(r, g, b);
 	glVertex2f(score, 0);
-	glVertex2f(score, 100);
+	glVertex2f(score, 500);
 	glEnd();
 }
 
@@ -349,6 +349,7 @@ void MyGlWindow::update()
 	auto map = floor->getAnglePoints(player->particle->getPosition().x - player->getHeight(), player->particle->getPosition().x + player->getHeight());
 	floor_contact->setDots(map);
 	m_c_resolver->update(duration);
+	player->particle->setPosition(player->particle->getPosition().x, player->particle->getPosition().y, 0);
 }
 
 void MyGlWindow::focus_cam(cyclone::Particle* target) {
