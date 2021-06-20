@@ -34,3 +34,6 @@
 # VS files
 *.vs
 *Debug/
+
+# User Data
+*highscore.dat

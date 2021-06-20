@@ -59,7 +59,7 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 			cyclone::Vector3 closest = map[j] + v1.unit() * v2.magnitude() * ((v1.x * v2.x + v1.y * v2.y) / (v1.magnitude() * v2.magnitude()));
 			cyclone::Vector3 n = pos - closest;
 
-			if (v2.magnitude() - size[i] < v1.magnitude() && v3.magnitude() - size[i] < v1.magnitude() && n.magnitude() < size[i])
+			if (v2.magnitude() - size[i] <= v1.magnitude() && v3.magnitude() - size[i] <= v1.magnitude() && n.magnitude() <= size[i])
 			{
 				is_colliding = true;
 				if (particles[i].second == false) {
@@ -76,7 +76,7 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 			contact->contactNormal = contacts.first.unit();
 			contact->particle[0] = particles[i].first;
 			contact->particle[1] = NULL;
-			contact->penetration = contacts.second;
+			contact->penetration = contacts.second < 0.001 ? 0 : contacts.second;
 			contact->restitution = 1.0f;
 
 			contact++;

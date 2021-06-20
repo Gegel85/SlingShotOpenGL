@@ -2,7 +2,7 @@
 #include "Floor.h"
 
 #define NB_PARTICLES 50
-#define DELTA_SPEED 2
+#define DELTA_SPEED 10
 #define MIN_LENGTH 10
 #define MAX_LENGTH 50
 
@@ -18,14 +18,9 @@ WindEffect::WindEffect(const Floor &floor, float angle, glm::vec2 topLeftBorder,
 	this->_generate();
 }
 
-void WindEffect::setAngle(float angle)
+void setAngle(float angle)
 {
-	this->_angle = angle;
-}
 
-void WindEffect::setSpeed(float speed)
-{
-	this->_speed = speed;
 }
 
 void WindEffect::update(cyclone::real duration)
@@ -60,8 +55,11 @@ void WindEffect::draw(bool shadow)
 	glBegin(GL_LINES);
 	for (auto &elem : this->_elems) {
 		glColor4f(0.9, 0.9, 0.9, elem.alpha);
+		//glColor3f(elem.alpha, elem.alpha, elem.alpha);
 		glVertex3f(elem.pt1.x, elem.pt1.y, 0);
 		glVertex3f(elem.pt2.x, elem.pt2.y, 0);
+		//glVertex3f(elem.pt2.x + 1, elem.pt2.y + 1, 0);
+		//glVertex3f(elem.pt1.x + 1, elem.pt1.y + 1, 0);
 	}
 	glEnd();
 	glPopMatrix();

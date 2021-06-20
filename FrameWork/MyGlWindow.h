@@ -23,10 +23,12 @@
 #include "MyFiles/Physics/Forces/MyBuoyancy.h"
 #include "MyFiles/Physics/Forces/PoleConnection.h"
 #include "MyFiles/Physics/Forces/MyAnchoredSpring.h"
+#include "MyFiles/Physics/Forces/MyWind.h"
 #include "MyFiles/Physics/Objects/MySphere.h"
 #include "MyFiles/Physics/Objects/MyLiquid.h"
 #include "MyFiles/Physics/Collision/MyCollisionResolver.h"
 #include "MyFiles/Physics/Collision/MyColliders.h"
+#include "WindEffect.h"
 #include "Floor.h"
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -70,8 +72,10 @@ private:
 	MyCollisionResolver* m_c_resolver;
 	std::vector<IMyRender*> m_renderables;
 	std::vector<std::pair<MyObject*, bool>> m_objects;
-	PoleConnection *slingshot ;
+	PoleConnection *slingshot;
 	MyLiquid* water;
+	MyWind* wind_force;
+	WindEffect* wind;
 	Floor* floor;
 	cyclone::MyLinesContact* floor_contact;
 	MySphere* player;
