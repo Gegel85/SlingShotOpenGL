@@ -23,9 +23,9 @@ static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 #define LEFT_POSITION -150
 #define SLINGSHOT_STRENGHT 25
 
-void drawStrokeText(char* string, int x, int y, int z)
+void drawStrokeText(const char* string, int x, int y, int z)
 {
-	char* c;
+	const char* c;
 	glPushMatrix();
 	glTranslatef(x, y + 8, z);
 	glScalef(0.2, 0.2, 0.2);
@@ -37,7 +37,7 @@ void drawStrokeText(char* string, int x, int y, int z)
 }
 
 
-void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
+void MyGlWindow::putText(const char* string, int x, int y, float r, float g, float b)
 {
 	glDisable(GL_LIGHTING);
 
@@ -84,7 +84,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 {
 	std::ifstream stream{ "highscore.dat", std::ifstream::binary };
 
-	if (stream.fail())
+	if (!stream.fail())
 		stream.read(reinterpret_cast<char *>(&this->_highScore), sizeof(this->_highScore));
 	mode(FL_RGB | FL_ALPHA | FL_DOUBLE | FL_STENCIL);
 
@@ -202,6 +202,15 @@ void MyGlWindow::drawStuff()
 	polygonf(4, 20., 0., -25., 20., 0., 25., 20., 30., 25., 20., 30., -25.);
 }
 
+void MyGlWindow::drawScoreLine(float r, float g, float b, float score)
+{
+	glBegin(GL_LINES);
+	glColor3f(r, g, b);
+	glVertex2f(score, 0);
+	glVertex2f(score, 100);
+	glEnd();
+}
+
 //==========================================================================
 void MyGlWindow::draw()
 //==========================================================================
@@ -279,6 +288,8 @@ void MyGlWindow::draw()
 		item.first->draw(0);
 	}
 
+	drawScoreLine(1, 0, 0, max(this->_highScore, player->particle->getPosition().x));
+	drawScoreLine(0, 1, 0, max(this->_score, player->particle->getPosition().x));
 
 	glEnable(GL_LIGHTING);
 
@@ -295,7 +306,7 @@ void MyGlWindow::update()
 	float duration = 1. / 30;
 
 	if (!this->slingshot->getForce()) {
-		int s = std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f;
+		int s = std::ceil(player->particle->getPosition().x * 100.0f) / 100.0f;
 
 		this->_score = max(this->_score, s);
 	}

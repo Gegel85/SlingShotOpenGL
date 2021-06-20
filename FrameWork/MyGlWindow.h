@@ -57,8 +57,9 @@ public:
 private:
 	void draw();					// standard FlTk
 
-	void putText(char* string, int x, int y, float r, float g, float b);
+	void putText(const char* string, int x, int y, float r, float g, float b);
 	int handle(int);				// standard FlTk
+	void drawScoreLine(float r, float g, float b, float score);
 
 	int frames = 0;
 	int _highScore = 0;

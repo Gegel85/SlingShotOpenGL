@@ -27,4 +27,6 @@ void MyLiquid::draw(bool shadow)
 	glTranslatef(pos.x, pos.y + (height - depth) / 2.0f , pos.z);
 	drawCube(length, depth + height, width); //illustrate water
 	glPopMatrix();
+	glDisable(GL_BLEND);
+	glEnable(GL_LIGHTING);
 }

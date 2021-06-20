@@ -58,6 +58,8 @@ void WindEffect::draw(bool shadow)
 		glVertex3f(elem.pt2.x, elem.pt2.y, 0);
 	}
 	glEnd();
+	glDisable(GL_BLEND);
+	glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
 
