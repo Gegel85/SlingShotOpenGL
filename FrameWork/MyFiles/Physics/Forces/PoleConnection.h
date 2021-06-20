@@ -14,6 +14,7 @@ public:
 	// Hérité via AMyConnection
 	virtual void update(cyclone::real duration = 0) override;
 	virtual void draw(bool shadow) override;
+	const cyclone::AMyAnchoredForce* getForce();
 
 protected:
 	cyclone::AMyAnchoredForce* m_force;

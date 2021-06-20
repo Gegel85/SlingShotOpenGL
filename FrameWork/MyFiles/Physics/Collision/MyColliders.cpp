@@ -50,6 +50,7 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 	for (int i = 0; i < particles.size(); i++)
 	{
 		auto pos = particles[i].first->getPosition();
+		std::pair<cyclone::Vector3, float> contacts = std::make_pair(cyclone::Vector3(), 0);
 		for (unsigned int j = 0; j < map.size() - 1; j++)
 		{
 			cyclone::Vector3 v1(map[j + 1].x - map[j].x, map[j + 1].y - map[j].y, 0);
@@ -62,39 +63,39 @@ unsigned MyLinesContact::addContact(cyclone::ParticleContact* contact, unsigned 
 			{
 				is_colliding = true;
 				if (particles[i].second == false) {
-					if (onEnter != NULL) onEnter(particles[i].first);
+					if (onEnter != NULL) (*onEnter)(particles[i].first);
 					particles[i].second = true;
 				}
-				else if (onStay != NULL) onStay(particles[i].first);
-				if (!is_trigger) {
-					contact->contactNormal = n.unit();
-					contact->particle[0] = particles[i].first;
-					contact->particle[1] = NULL;
-					contact->penetration = size[i] - n.magnitude();
-					contact->restitution = 1.0f;
+				else if (onStay != NULL) (*onStay)(particles[i].first);
 
-					contact++;
-					count++;
-				}
+				contacts.first += n.unit() * (size[i] - n.magnitude());
+				contacts.second += size[i] - n.magnitude();
 			}
-			if (particles[i].second == true && !is_colliding) {
-				if (onExit != NULL)  onExit(particles[i].first);
-				particles[i].second = false;
-			}
-			is_colliding = false;
-			if (count >= limit) return count;
 		}
+		if (is_colliding && !is_trigger) {
+			contact->contactNormal = contacts.first.unit();
+			contact->particle[0] = particles[i].first;
+			contact->particle[1] = NULL;
+			contact->penetration = contacts.second;
+			contact->restitution = 1.0f;
+
+			contact++;
+			count++;
+		}
+		if (particles[i].second == true && !is_colliding) {
+			if (onExit != NULL) (*onExit)(particles[i].first);
+			particles[i].second = false;
+		}
+		is_colliding = false;
+		if (count >= limit) return count;
 	}
 	return count;
 }
 
-unsigned int cyclone::MyLinesContact::getMaxContactCount()
+cyclone::MyCircleContact::MyCircleContact(cyclone::Vector3 origin, cyclone::real radius)
 {
-	return map.size() + particles.size();
-}
-
-cyclone::MyCircleContact::MyCircleContact()
-{
+	_origin = origin;
+	_radius = radius;
 }
 
 cyclone::MyCircleContact::~MyCircleContact()
@@ -117,31 +118,27 @@ unsigned cyclone::MyCircleContact::addContact(cyclone::ParticleContact* contact,
 
 	for (int i = 0; i < particles.size(); i++)
 	{
-		for (int j = 0; j < particles.size(); j++)
+		cyclone::Vector3 d = particles[i].first->getPosition() - _origin;
+		if (d.magnitude() < size[i] + _radius)
 		{
-			cyclone::Vector3 d = particles[i].first->getPosition() - particles[j].first->getPosition();
-			if (d.magnitude() < size[i] + size[j])
-			{
-				if (particles[i].second == false) {
-					if (onEnter != NULL)  onEnter(particles[i].first);
-					particles[i].second = true;
-				}
-				else if (onStay != NULL)  onStay(particles[i].first);
-				if (!is_trigger) {
-					contact->contactNormal = d.unit();
-					contact->particle[0] = particles[i].first;
-					contact->particle[1] = particles[j].first;
-					contact->penetration = size[i] + size[j] - d.magnitude();
-					contact->restitution = 1.0f;
-
-					contact++;
-					count++;
-				}
+			if (particles[i].second == false) {
+				if (onEnter != NULL) (*onEnter)(particles[i].first);
+				particles[i].second = true;
 			}
+			else if (onStay != NULL) (*onStay)(particles[i].first);
+			if (!is_trigger) {
+				contact->contactNormal = d.unit();
+				contact->particle[0] = particles[i].first;
+				contact->particle[1] = NULL;
+				contact->penetration = size[i] + _radius - d.magnitude();
+				contact->restitution = 1.0f;
 
+				contact++;
+				count++;
+			}
 		}
 		if (particles[i].second == true && !is_colliding) {
-			if (onExit != NULL)  onExit(particles[i].first);
+			if (onExit != NULL) (*onExit)(particles[i].first);
 			particles[i].second = false;
 		}
 		is_colliding = false;
@@ -183,10 +180,10 @@ unsigned cyclone::MyRectContact::addContact(cyclone::ParticleContact * contact, 
 			if (true)
 			{
 				if (particles[i].second == false) {
-					if (onEnter != NULL)  onEnter(particles[i].first);
+					if (onEnter != NULL) (*onEnter)(particles[i].first);
 					particles[i].second = true;
 				}
-				else if (onStay != NULL) onStay(particles[i].first);
+				else if (onStay != NULL) (*onStay)(particles[i].first);
 				if (!is_trigger) {
 					contact->contactNormal = n.unit();
 					contact->particle[0] = particles[i].first;
@@ -201,7 +198,7 @@ unsigned cyclone::MyRectContact::addContact(cyclone::ParticleContact * contact, 
 
 		}
 		if (particles[i].second == true && !is_colliding) {
-			if (onExit != NULL)  onExit(particles[i].first);
+			if (onExit != NULL) (*onExit)(particles[i].first);
 			particles[i].second = false;
 		}
 		is_colliding = false;

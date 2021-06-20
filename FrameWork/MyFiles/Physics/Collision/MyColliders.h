@@ -3,6 +3,7 @@
 #include <vector>
 #include "particle.h"
 #include "plinks.h"
+#include <functional>
 
 namespace cyclone {
 
@@ -15,9 +16,9 @@ namespace cyclone {
 		virtual unsigned addContact(cyclone::ParticleContact* contact, unsigned limit) const = 0;
 		virtual unsigned int getMaxContactCount();
 
-		void(*onEnter)(cyclone::Particle* contact) = NULL;
-		void(*onStay)(cyclone::Particle* contact) = NULL;
-		void(*onExit)(cyclone::Particle* contact) = NULL;
+		 std::function<void(cyclone::Particle*)> *onEnter = NULL;
+		 std::function<void(cyclone::Particle*)> *onStay = NULL;
+		 std::function<void(cyclone::Particle*)> *onExit = NULL;
 
 	protected:
 		mutable std::vector<std::pair<cyclone::Particle*, bool>> particles;
@@ -36,14 +37,14 @@ namespace cyclone {
 		// Hérité via AMyContact
 		void init(cyclone::Particle* p, double size) override;
 		virtual unsigned addContact(cyclone::ParticleContact* contact, unsigned limit) const override;
-		unsigned int getMaxContactCount() override;
-
 	};
 
 	class MyCircleContact : public AMyContact
 	{
+		cyclone::Vector3 _origin;
+		cyclone::real _radius;
 	public:
-		MyCircleContact();
+		MyCircleContact(cyclone::Vector3 origin, cyclone::real radius);
 		~MyCircleContact();
 
 		// Hérité via AMyContact

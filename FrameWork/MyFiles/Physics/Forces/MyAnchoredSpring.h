@@ -8,7 +8,7 @@ namespace cyclone
 		cyclone::real springConstant; //Spring constant
 		cyclone::real restLength; //lest length
 	public:
-		MyAnchoredSpring(cyclone::Vector3* other, double springConstant, double restLenght);
+		MyAnchoredSpring(cyclone::Vector3* anchor, double springConstant, double restLenght);
 
 		// Hérité via AMyAnchoredForce
 		virtual void updateForce(Particle* particle, real duration) override;

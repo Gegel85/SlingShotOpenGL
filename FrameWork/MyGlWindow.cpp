@@ -18,6 +18,7 @@ static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 #define MAX_DELTA 8
 #define CHUNK_SIZE 500 / SPACE
 #define LEFT_POSITION -150
+#define SLINGSHOT_STRENGHT 25
 
 void drawStrokeText(char* string, int x, int y, int z)
 {
@@ -56,10 +57,13 @@ void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 
 void MyGlWindow::resetGame()
 {
+	game_step = 0;
 	floor->regenerate(NB_POINTS, SPACE, MIN_FLOOR_Y, MAX_FLOOR_Y, START_VALUE, MAX_DELTA);
 	floor->setPosition(cyclone::Vector3(LEFT_POSITION, 0, 0));
 	floor->setLeftX(LEFT_POSITION);
-	player->resetTranslation(cyclone::Vector3(0, 100, 0));
+	player->resetTranslation(cyclone::Vector3(0, START_VALUE + 19 + player->radius, 0));
+	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
+	m_objects[0].second = true;
 }
 
 MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
@@ -83,6 +87,14 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 	m_c_resolver = new MyCollisionResolver();
 
+	launch_ball = [this](cyclone::Particle* contact) {
+		std::cout << "contact" << std::endl;
+		if (game_step == 2) {
+			game_step = 3;
+			slingshot->setForce(NULL);
+		}
+	};
+
 	setupForces();
 	setupObjects();
 	resetGame();
@@ -90,15 +102,16 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 void MyGlWindow::setupForces() {
 	m_world = new MyWorldSpec(cyclone::Vector3::GRAVITY);
-	water = new MyLiquid(MAX_DELTA * 2, 1, m_world);
+	water = new MyLiquid((MAX_FLOOR_Y - MIN_FLOOR_Y) * 0.15, 5, m_world);
 	water->setPosition(cyclone::Vector3(0, MIN_FLOOR_Y, 0));
-	water->width = 30;
-	water->length = 200;
+	water->width = DEPTH*2 - 0.01;
+	water->length = CHUNK_SIZE * SPACE;
+
 }
 
 void MyGlWindow::setupObjects() {
-	player = new MySphere(2, 2, m_world);
-	player->particle->setDamping(0.7);
+	player = new MySphere(3, 10, m_world);
+	player->particle->setDamping(0.9);
 	water->m_force->setTarget(player);
 
 	floor_contact = new cyclone::MyLinesContact({});
@@ -111,12 +124,21 @@ void MyGlWindow::setupObjects() {
 	floor->setLeftX(LEFT_POSITION);
 	floor->setBottom(-100);
 
+	slingshot = new PoleConnection(player);
+	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
+
+	auto launch = new cyclone::MyCircleContact(cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), 3.0);
+	launch->is_trigger = true;
+	launch->init(player->particle, player->radius);
+	launch->onEnter = &launch_ball;
+	m_c_resolver->m_contacts.push_back(launch);
+
 	m_objects.emplace_back(player, true);
-	m_objects.emplace_back(water, false);
+	m_renderables.push_back(slingshot);
 	m_renderables.push_back(floor);
 	m_renderables.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
+	m_objects.emplace_back(water, false);
 }
-
 
 void MyGlWindow::setupLight(float x, float y, float z)
 {
@@ -173,7 +195,7 @@ void MyGlWindow::draw()
 	glViewport(0, 0, w(), h());
 
 	// clear the window, be sure to clear the Z-Buffer too
-	glClearColor(0.2, 0.2, 0.2, 1);		// background should be blue
+	glClearColor(0.2, 0.2, 0.7, 1);		// background should be blue
 
 	focus_cam(player->particle);
 
@@ -196,6 +218,7 @@ void MyGlWindow::draw()
 
 	setupLight(m_viewer->getViewPoint().x, m_viewer->getViewPoint().y, m_viewer->getViewPoint().z);
 
+	/*
 	//Draw axises
 	glLineWidth(3.0f);
 	glBegin(GL_LINES);
@@ -215,7 +238,7 @@ void MyGlWindow::draw()
 	glVertex3f(0, 0, 100);
 	glEnd();
 	glLineWidth(1.0f);
-
+	*/
 
 	/////////////////////////
 //	putText("7001539", 0, 0, 1, 1, 0); // ça nique le doPick()
@@ -262,11 +285,10 @@ void MyGlWindow::update()
 	if (scoreCallback)
 		scoreCallback(std::roundf(player->particle->getPosition().x * 100.0f) / 100.0f);
 
-	
 	auto p = this->m_objects[0].first->particle->getPosition();
 	auto p2 = this->floor->particle->getPosition();
 	auto v = this->m_objects[0].first->particle->getVelocity();
-	
+
 	floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
 	floor->setLeftX(p.x + LEFT_POSITION);
 	water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
@@ -293,10 +315,15 @@ void MyGlWindow::focus_cam(cyclone::Particle* target) {
 	auto v = target->getVelocity();
 	auto zoom = 0.75 + std::log10(std::abs(v.x) + 0.5) / 2;
 
-//	this->m_viewer->setZoom(zoom);
-//	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
-	m_viewer->centerAt(glm::vec3(p.x, p.y, p.z));
-	m_viewer->lookFrom(glm::vec3(p.x, p.y, p.z) + glm::vec3(0, 75, 75));
+	if (game_step >= 2) {
+		//	this->m_viewer->setZoom(zoom);
+		//	this->m_viewer->setTranslate(glm::vec3{ p.x - 70 * (1 - zoom), p.y, p.z });
+		m_viewer->centerAt(glm::vec3(p.x, p.y, p.z));
+		m_viewer->lookFrom(glm::vec3(p.x, p.y, p.z) + glm::vec3(-5, 75, 75));
+	} else {
+		m_viewer->centerAt(glm::vec3(0, START_VALUE + 20, 0));
+		m_viewer->lookFrom(glm::vec3(0, START_VALUE + 20, 0) + glm::vec3(0, 0, 75));
+	}
 }
 
 void MyGlWindow::doPick()
@@ -400,14 +427,18 @@ int MyGlWindow::handle(int e)
 			if (m_selected >= 0) {
 				m_objects[m_selected].first->m_static = true;
 				std::cout << "picked" << std::endl;
+				game_step = 1;
 			}
 		}
 		damage(1);
 		return 1;
 	}
 	case FL_RELEASE:
-		if (m_selected >= 0)
+		if (m_selected >= 0) {
 			m_objects[m_selected].first->m_static = false;
+			m_objects[m_selected].second = false;
+			game_step = 2;
+		}
 		m_pressedMouseButton = -1;
 		damage(1);
 		return 1;
@@ -435,20 +466,20 @@ int MyGlWindow::handle(int e)
 			}
 			else
 			{
-				m_viewer->rotate(fractionChangeX, fractionChangeY);
+//				m_viewer->rotate(fractionChangeX, fractionChangeY);
 			}
 		}
 		else if (m_pressedMouseButton == 2) {
-			m_viewer->zoom(fractionChangeY);
+//			m_viewer->zoom(fractionChangeY);
 		}
 		else if (m_pressedMouseButton == 3) {
-			m_viewer->translate(-fractionChangeX, -fractionChangeY, (Fl::event_key(FL_Shift_L) == 0) || (Fl::event_key(FL_Shift_R) == 0));
+//			m_viewer->translate(-fractionChangeX, -fractionChangeY, (Fl::event_key(FL_Shift_L) == 0) || (Fl::event_key(FL_Shift_R) == 0));
 		}
 		else {
 			std::cout << "Warning: dragging with unknown mouse button!  Nothing will be done" << std::endl;
 		}
-		std::cout << m_viewer->getViewPoint().x << " " << m_viewer->getViewPoint().y << " " << m_viewer->getViewPoint().z << ":"
-			<< m_viewer->getViewCenter().x << " " << m_viewer->getViewCenter().y << " " << m_viewer->getViewCenter().z << std::endl;
+//		std::cout << m_viewer->getViewPoint().x << " " << m_viewer->getViewPoint().y << " " << m_viewer->getViewPoint().z << ":"
+//			<< m_viewer->getViewCenter().x << " " << m_viewer->getViewCenter().y << " " << m_viewer->getViewCenter().z << std::endl;
 		m_lastMouseX = Fl::event_x();
 		m_lastMouseY = Fl::event_y();
 		redraw();

@@ -21,6 +21,8 @@
 #include "core.h"
 #include "particle.h"
 #include "MyFiles/Physics/Forces/MyBuoyancy.h"
+#include "MyFiles/Physics/Forces/PoleConnection.h"
+#include "MyFiles/Physics/Forces/MyAnchoredSpring.h"
 #include "MyFiles/Physics/Objects/MySphere.h"
 #include "MyFiles/Physics/Objects/MyLiquid.h"
 #include "MyFiles/Physics/Collision/MyCollisionResolver.h"
@@ -66,11 +68,14 @@ private:
 	MyCollisionResolver* m_c_resolver;
 	std::vector<IMyRender*> m_renderables;
 	std::vector<std::pair<MyObject*, bool>> m_objects;
+	PoleConnection *slingshot ;
 	MyLiquid* water;
 	Floor* floor;
 	cyclone::MyLinesContact* floor_contact;
 	MySphere* player;
+	int game_step = 0;
 	int m_selected = -1;
+	std::function<void(cyclone::Particle*)> launch_ball;
 	void (*scoreCallback)(const float&);
 
 	void setProjection(int clearProjection = 1);
