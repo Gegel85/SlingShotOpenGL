@@ -71,6 +71,7 @@ void MyGlWindow::resetGame()
 	player->resetTranslation(cyclone::Vector3(0, START_VALUE + 19 + player->radius, 0));
 	player->forces->remove(player->particle, m_world->gravity);
 	player->forces->remove(player->particle, wind_force);
+	player->forces->remove(player->particle, water->m_force);
 	m_objects[0].second = true;
 
 	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
@@ -118,6 +119,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 			floor_contact->is_trigger = false;
 			player->forces->add(player->particle, wind_force);
 			player->forces->add(player->particle, m_world->gravity);
+			water->m_force->setTarget(player);
 		}
 	};
 
@@ -128,7 +130,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 void MyGlWindow::setupForces() {
 	m_world = new MyWorldSpec(cyclone::Vector3::GRAVITY);
-	water = new MyLiquid((MAX_FLOOR_Y - MIN_FLOOR_Y) * 0.15, 5, m_world);
+	water = new MyLiquid((MAX_FLOOR_Y - MIN_FLOOR_Y) * 0.25, 5, m_world);
 	water->setPosition(cyclone::Vector3(0, MIN_FLOOR_Y, 0));
 	water->width = DEPTH*2 - 0.01;
 	water->length = CHUNK_SIZE * SPACE;
@@ -138,7 +140,6 @@ void MyGlWindow::setupForces() {
 void MyGlWindow::setupObjects() {
 	player = new MySphere(3, 10, m_world);
 	player->particle->setDamping(0.9);
-	water->m_force->setTarget(player);
 
 	floor_contact = new cyclone::MyLinesContact({});
 	floor_contact->init(player->particle, player->radius);
