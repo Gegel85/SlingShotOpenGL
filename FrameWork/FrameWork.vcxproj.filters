@@ -39,6 +39,7 @@
     <ClCompile Include="Viewer.cpp" />
     <ClCompile Include="WindEffect.cpp" />
     <ClCompile Include="MyFiles\Physics\Collision\MyColliders.cpp" />
+    <ClCompile Include="MyFiles\Physics\Forces\MyWind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Cyclone\body.h" />
@@ -85,5 +86,6 @@
     <ClInclude Include="Vec3f.h" />
     <ClInclude Include="Viewer.h" />
     <ClInclude Include="WindEffect.h" />
+    <ClInclude Include="MyFiles\Physics\Forces\MyWind.h" />
   </ItemGroup>
 </Project>

@@ -22,6 +22,7 @@ static double DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 #define CHUNK_SIZE 500 / SPACE
 #define LEFT_POSITION -150
 #define SLINGSHOT_STRENGHT 25
+#define WIND_V_MAX 20
 
 void drawStrokeText(const char* string, int x, int y, int z)
 {
@@ -67,6 +68,11 @@ void MyGlWindow::resetGame()
 	floor->setLeftX(LEFT_POSITION);
 	player->resetTranslation(cyclone::Vector3(0, START_VALUE + 19 + player->radius, 0));
 	slingshot->setForce(new cyclone::MyAnchoredSpring(new cyclone::Vector3(0, START_VALUE + 20 + player->radius, 0), SLINGSHOT_STRENGHT, 0.0));
+	wind_force->direction = myRand(-pi, pi);
+	wind_force->speed = myRand(5, WIND_V_MAX);
+	wind->setAngle(wind_force->direction);
+	player->forces->remove(player->particle, wind_force);
+	floor_contact->is_trigger = true;
 	m_objects[0].second = true;
 }
 
@@ -106,6 +112,8 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 		if (game_step == 2) {
 			game_step = 3;
 			slingshot->setForce(NULL);
+			floor_contact->is_trigger = false;
+			player->forces->add(player->particle, wind_force);
 		}
 	};
 
@@ -120,7 +128,7 @@ void MyGlWindow::setupForces() {
 	water->setPosition(cyclone::Vector3(0, MIN_FLOOR_Y, 0));
 	water->width = DEPTH*2 - 0.01;
 	water->length = CHUNK_SIZE * SPACE;
-
+	wind_force = new MyWind(myRand(-pi, pi), myRand(0, 10));
 }
 
 void MyGlWindow::setupObjects() {
@@ -147,10 +155,12 @@ void MyGlWindow::setupObjects() {
 	launch->onEnter = &launch_ball;
 	m_c_resolver->m_contacts.push_back(launch);
 
+	wind = new WindEffect(*floor, wind_force->direction, { 0, 0 }, { 300, 300 }, wind_force->speed);
+
 	m_objects.emplace_back(player, true);
 	m_renderables.push_back(slingshot);
 	m_renderables.push_back(floor);
-	m_renderables.push_back(new WindEffect(*floor, 3.1415, { 0, 0 }, { 300, 300 }));
+	m_renderables.push_back(wind);
 	m_objects.emplace_back(water, false);
 }
 
@@ -319,9 +329,11 @@ void MyGlWindow::update()
 	auto p2 = this->floor->particle->getPosition();
 	auto v = this->m_objects[0].first->particle->getVelocity();
 
-	floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
-	floor->setLeftX(p.x + LEFT_POSITION);
-	water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
+	if (game_step >= 2) {
+		floor->setPosition(cyclone::Vector3(p.x + LEFT_POSITION, p2.y, p2.z));
+		floor->setLeftX(p.x + LEFT_POSITION);
+		water->setPosition(cyclone::Vector3(p.x, MIN_FLOOR_Y, 0));
+	}
 
 	for (auto item : m_renderables)
 	{
@@ -384,7 +396,6 @@ void MyGlWindow::doPick()
 
 	// draw the cubes, loading the names as we go
 	for (size_t i = 0; i < m_objects.size(); ++i) {
-		std::cout << "try pick: " << i << std::endl;
 		glLoadName((GLuint)(i + 1));
 		if (m_objects[i].second)
 			m_objects[i].first->draw(0);
@@ -398,12 +409,10 @@ void MyGlWindow::doPick()
 		// one - see the OpenGL manual 
 		// remember: we load names that are one more than the index
 		m_selected = buf[3] - 1;
-		std::cout << "did hit" << std::endl;
 	}
 	else {// nothing hit, nothing selected
 		m_selected = -1;
 	}
-	printf("Selected Cube %d\n", m_selected);
 }
 
 
@@ -452,11 +461,9 @@ int MyGlWindow::handle(int e)
 		m_lastMouseY = Fl::event_y();
 
 		if (m_pressedMouseButton == 1) {
-			std::cout << "click" << std::endl;
 			doPick();
 			if (m_selected >= 0) {
 				m_objects[m_selected].first->m_static = true;
-				std::cout << "picked" << std::endl;
 				game_step = 1;
 			}
 		}
@@ -496,20 +503,8 @@ int MyGlWindow::handle(int e)
 			}
 			else
 			{
-//				m_viewer->rotate(fractionChangeX, fractionChangeY);
 			}
 		}
-		else if (m_pressedMouseButton == 2) {
-//			m_viewer->zoom(fractionChangeY);
-		}
-		else if (m_pressedMouseButton == 3) {
-//			m_viewer->translate(-fractionChangeX, -fractionChangeY, (Fl::event_key(FL_Shift_L) == 0) || (Fl::event_key(FL_Shift_R) == 0));
-		}
-		else {
-			std::cout << "Warning: dragging with unknown mouse button!  Nothing will be done" << std::endl;
-		}
-//		std::cout << m_viewer->getViewPoint().x << " " << m_viewer->getViewPoint().y << " " << m_viewer->getViewPoint().z << ":"
-//			<< m_viewer->getViewCenter().x << " " << m_viewer->getViewCenter().y << " " << m_viewer->getViewCenter().z << std::endl;
 		m_lastMouseX = Fl::event_x();
 		m_lastMouseY = Fl::event_y();
 		redraw();

@@ -36,6 +36,7 @@
     <ClCompile Include="MyFiles\Physics\Forces\MyBuoyancy.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MyParticleMagnet.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\MySpring.cpp" />
+    <ClCompile Include="MyFiles\Physics\Forces\MyWind.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\ObjectConnection.cpp" />
     <ClCompile Include="MyFiles\Physics\Forces\PoleConnection.cpp" />
     <ClCompile Include="MyFiles\Physics\MyWorldSpec.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="MyFiles\Physics\Forces\MyBuoyancy.h" />
     <ClInclude Include="MyFiles\Physics\Forces\MyParticleMagnet.h" />
     <ClInclude Include="MyFiles\Physics\Forces\MySpring.h" />
+    <ClInclude Include="MyFiles\Physics\Forces\MyWind.h" />
     <ClInclude Include="MyFiles\Physics\Forces\ObjectConnection.h" />
     <ClInclude Include="MyFiles\Physics\Forces\PoleConnection.h" />
     <ClInclude Include="MyFiles\Physics\MyWorldSpec.h" />
