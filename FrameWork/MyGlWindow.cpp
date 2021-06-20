@@ -135,7 +135,7 @@ void MyGlWindow::setupObjects() {
 	m_objects.emplace_back(player, true);
 	m_renderables.push_back(slingshot);
 	m_renderables.push_back(floor);
-	m_renderables.push_back(new WindEffect(3.1415, { 0, 0 }, { 1000, 1000 }));
+	m_renderables.push_back(new WindEffect(*floor, 3.1415, { 0, 0 }, { 300, 300 }));
 	m_objects.emplace_back(water, false);
 }
 

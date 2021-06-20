@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "glm/glm.hpp"
+#include "Floor.h"
 #include "MyFiles/Display/IMyRender.h"
 
 class WindEffect : public IMyRender {
@@ -13,6 +14,7 @@ private:
 		float alpha;
 	};
 
+	const Floor &_floor;
 	float _angle;
 	glm::vec2 _topLeftBorder;
 	glm::vec2 _bottomRightBorder;
@@ -21,7 +23,8 @@ private:
 	void _generate();
 
 public:
-	WindEffect(float angle, glm::vec2 topLeftBorder, glm::vec2 bottomRightBorder);
+	WindEffect(const Floor &floor, float angle, glm::vec2 topLeftBorder, glm::vec2 bottomRightBorder);
+	void setAngle(float angle);
 	void update(cyclone::real duration = 0) override;
 	void draw(bool shadow) override;
 };
